@@ -1,3 +1,4 @@
+// server.js
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,33 +10,44 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static site from /public
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ---- Config (set these in Cloud Run Environment Variables)
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID; // required
-const LEADS_RANGE_NAME = process.env.LEADS_RANGE_NAME || "RANGEREBUILDLEADS"; // named range in the Sheet
+// ---------------------------------------------------------------------
+// CONFIG
+// ---------------------------------------------------------------------
+// Your Sheet ID (hard-coded). You can still override with env var.
+const SHEET_ID_FALLBACK = "1rxqvrZV27sJUD4uYoKXITs_wtCEpCY0aQm9JQWftqJI";
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || SHEET_ID_FALLBACK;
+
+// IMPORTANT:
+// LEADS_RANGE_NAME must exist as a *Named Range* in that spreadsheet,
+// OR change this to an A1 range like: "Sheet2!A:AB"
+const LEADS_RANGE_NAME = process.env.LEADS_RANGE_NAME || "RANGEREBUILDLEADS";
+
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
 
-// ---- Helpers
+// ---------------------------------------------------------------------
+// HELPERS
+// ---------------------------------------------------------------------
 function toNumber(x) {
   const n = Number(x);
   return Number.isFinite(n) ? n : 0;
 }
 
 function generateLeadId() {
-  // Similar to your RB12345 style; collisions are extremely unlikely.
   const num = Math.floor(Math.random() * 90000) + 10000;
   return `RB${num}`;
 }
 
 async function getSheetsClient() {
-  // Uses Application Default Credentials (best practice on Cloud Run)
-  // Make sure your Cloud Run service account has Sheets access to the spreadsheet.
+  // Cloud Run best practice: Application Default Credentials
   const auth = new google.auth.GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
@@ -43,11 +55,14 @@ async function getSheetsClient() {
   return google.sheets({ version: "v4", auth: authClient });
 }
 
+// ---------------------------------------------------------------------
+// API
+// ---------------------------------------------------------------------
 app.post("/api/rb/lead", async (req, res) => {
   try {
     const formData = req.body || {};
 
-    // Required fields (matching your Apps Script)
+    // Required fields
     if (!formData.fullName || !formData.primaryPhone || !formData.preferredChannel) {
       return res.status(400).json({
         success: false,
@@ -56,7 +71,9 @@ app.post("/api/rb/lead", async (req, res) => {
     }
 
     if (!SPREADSHEET_ID) {
-      return res.status(500).json({ success: false, error: "Server not configured (SPREADSHEET_ID missing)." });
+      return res
+        .status(500)
+        .json({ success: false, error: "Server not configured (SPREADSHEET_ID missing)." });
     }
 
     const leadId = formData.leadId || generateLeadId();
@@ -95,20 +112,17 @@ app.post("/api/rb/lead", async (req, res) => {
 
     const sheets = await getSheetsClient();
 
-    // Named range append (works great if your spreadsheet already has that named range)
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: LEADS_RANGE_NAME,
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
-      requestBody: {
-        values: [row],
-      },
+      requestBody: { values: [row] },
     });
 
     return res.json({ success: true, leadId });
   } catch (err) {
-    console.error(err);
+    console.error("Error saving lead:", err?.message || err);
     return res.status(500).json({ success: false, error: "Server error saving lead." });
   }
 });
