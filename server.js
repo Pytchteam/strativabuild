@@ -21,14 +21,18 @@ app.get("/", (req, res) => {
 // ---------------------------------------------------------------------
 // CONFIG
 // ---------------------------------------------------------------------
-// Your Sheet ID (hard-coded). You can still override with env var.
 const SHEET_ID_FALLBACK = "1rxqvrZV27sJUD4uYoKXITs_wtCEpCY0aQm9JQWftqJI";
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID || SHEET_ID_FALLBACK;
 
-// IMPORTANT:
-// LEADS_RANGE_NAME must exist as a *Named Range* in that spreadsheet,
-// OR change this to an A1 range like: "Sheet2!A:AB"
-const LEADS_RANGE_NAME = process.env.LEADS_RANGE_NAME || "RANGEREBUILDLEADS";
+/**
+ * IMPORTANT:
+ * - If you use a Named Range, keep something like "RANGEREBUILDLEADS"
+ * - If you use a normal tab/range, use A1 notation like: "Leads!A:AB"
+ *
+ * If you're not 100% sure the named range exists, switch to A1.
+ */
+const LEADS_RANGE_NAME =
+  process.env.LEADS_RANGE_NAME || "Leads!A:AB"; // <-- safer default than a named range
 
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
@@ -47,13 +51,22 @@ function generateLeadId() {
 }
 
 async function getSheetsClient() {
-  // Cloud Run best practice: Application Default Credentials
   const auth = new google.auth.GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
   const authClient = await auth.getClient();
   return google.sheets({ version: "v4", auth: authClient });
 }
+
+// Quick config check endpoint
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    spreadsheetIdConfigured: !!SPREADSHEET_ID,
+    spreadsheetId: SPREADSHEET_ID,
+    range: LEADS_RANGE_NAME,
+  });
+});
 
 // ---------------------------------------------------------------------
 // API
@@ -80,39 +93,39 @@ app.post("/api/rb/lead", async (req, res) => {
     const timestamp = new Date().toISOString();
 
     const row = [
-      timestamp,                          // 1 Timestamp
-      leadId,                             // 2 Lead ID
-      formData.fullName || "",            // 3 Full Name
-      formData.primaryPhone || "",        // 4 Primary Phone
-      formData.email || "",               // 5 Email
-      formData.preferredChannel || "",    // 6 Preferred Channel
-      formData.parish || "",              // 7 Parish
-      formData.community || "",           // 8 Community
-      formData.propertyStatus || "",      // 9 Property Status
-      formData.rebuildType || "",         // 10 Rebuild Type
-      toNumber(formData.hurricaneImpactLevel),     // 11 Hurricane Impact Level
-      toNumber(formData.projectPriority),          // 12 Project Priority
-      toNumber(formData.estimatedBudget),          // 13 Estimated Project Budget
-      toNumber(formData.comfortableMonthly),       // 14 Comfortable Monthly Payment
-      toNumber(formData.desiredTimelineMonths),    // 15 Desired Start Timeline (Months)
-      formData.nhtContributor || "",       // 16 NHT Contributor
-      formData.nhtProduct || "",           // 17 NHT Product Interest
-      formData.otherFinancing || "",       // 18 Other Financing Preference
-      formData.employmentType || "",       // 19 Employment Type
-      formData.incomeRange || "",          // 20 Approx Net Monthly Income Range
-      formData.hasOverseasSponsor || "",   // 21 Has Overseas Sponsor
-      formData.sponsorCountry || "",       // 22 Sponsor Country
-      formData.willingVisit || "",         // 23 Willing to Book Site Visit
-      formData.visitWindow || "",          // 24 Preferred Site Visit Window
-      formData.hearAboutUs || "",          // 25 How Did You Hear About Us
-      toNumber(formData.leadScore),        // 26 Lead Score
-      STAGE_DEFAULT,                       // 27 Stage
-      NOTES_DEFAULT,                       // 28 Internal Notes
+      timestamp,                           // 1 Timestamp
+      leadId,                              // 2 Lead ID
+      formData.fullName || "",             // 3 Full Name
+      formData.primaryPhone || "",         // 4 Primary Phone
+      formData.email || "",                // 5 Email
+      formData.preferredChannel || "",     // 6 Preferred Channel
+      formData.parish || "",               // 7 Parish
+      formData.community || "",            // 8 Community
+      formData.propertyStatus || "",       // 9 Property Status
+      formData.rebuildType || "",          // 10 Rebuild Type
+      toNumber(formData.hurricaneImpactLevel),  // 11 Hurricane Impact Level
+      toNumber(formData.projectPriority),       // 12 Project Priority
+      toNumber(formData.estimatedBudget),       // 13 Estimated Project Budget
+      toNumber(formData.comfortableMonthly),    // 14 Comfortable Monthly Payment
+      toNumber(formData.desiredTimelineMonths), // 15 Desired Start Timeline (Months)
+      formData.nhtContributor || "",        // 16 NHT Contributor
+      formData.nhtProduct || "",            // 17 NHT Product Interest
+      formData.otherFinancing || "",        // 18 Other Financing Preference
+      formData.employmentType || "",        // 19 Employment Type
+      formData.incomeRange || "",           // 20 Approx Net Monthly Income Range
+      formData.hasOverseasSponsor || "",    // 21 Has Overseas Sponsor
+      formData.sponsorCountry || "",        // 22 Sponsor Country
+      formData.willingVisit || "",          // 23 Willing to Book Site Visit
+      formData.visitWindow || "",           // 24 Preferred Site Visit Window
+      formData.hearAboutUs || "",           // 25 How Did You Hear About Us
+      toNumber(formData.leadScore),         // 26 Lead Score
+      STAGE_DEFAULT,                        // 27 Stage
+      NOTES_DEFAULT,                        // 28 Internal Notes
     ];
 
     const sheets = await getSheetsClient();
 
-    await sheets.spreadsheets.values.append({
+    const result = await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: LEADS_RANGE_NAME,
       valueInputOption: "USER_ENTERED",
@@ -120,10 +133,30 @@ app.post("/api/rb/lead", async (req, res) => {
       requestBody: { values: [row] },
     });
 
-    return res.json({ success: true, leadId });
+    return res.json({
+      success: true,
+      leadId,
+      updatedRange: result?.data?.updates?.updatedRange || null,
+    });
   } catch (err) {
-    console.error("Error saving lead:", err?.message || err);
-    return res.status(500).json({ success: false, error: "Server error saving lead." });
+    // Log the REAL error details from Google APIs
+    const status = err?.code || err?.response?.status;
+    const details = err?.response?.data || err?.errors || err;
+
+    console.error("Error saving lead:", {
+      message: err?.message,
+      status,
+      details,
+    });
+
+    return res.status(500).json({
+      success: false,
+      error: "Server error saving lead.",
+      debug: {
+        message: err?.message || "Unknown error",
+        status: status || null,
+      },
+    });
   }
 });
 
