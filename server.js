@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 // ---------------------------------------------------------------------
 // CONFIG
 // ---------------------------------------------------------------------
-const APPS_SCRIPT_EXEC_URL = process.env.APPS_SCRIPT_EXEC_URL || ""; // <-- ADD THIS in Cloud Run env vars
+const APPS_SCRIPT_EXEC_URL = process.env.APPS_SCRIPT_EXEC_URL || "https://script.google.com/macros/s/AKfycbwkZC4gly9UPnJ9nX_vh7lh-p4E-j_PhCOpdE-xCdRx4fCLcDcX71ZHYUGA9UGE_-Et/exec"; // <-- ADD THIS in Cloud Run env vars
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
 
