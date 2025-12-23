@@ -1,8 +1,7 @@
-// server.js
+// server.js (Cloud Run -> Apps Script writer)
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { google } from "googleapis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,19 +20,7 @@ app.get("/", (req, res) => {
 // ---------------------------------------------------------------------
 // CONFIG
 // ---------------------------------------------------------------------
-const SHEET_ID_FALLBACK = "1rxqvrZV27sJUD4uYoKXITs_wtCEpCY0aQm9JQWftqJI";
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID || SHEET_ID_FALLBACK;
-
-/**
- * IMPORTANT:
- * - If you use a Named Range, keep something like "RANGEREBUILDLEADS"
- * - If you use a normal tab/range, use A1 notation like: "Leads!A:AB"
- *
- * If you're not 100% sure the named range exists, switch to A1.
- */
-const LEADS_RANGE_NAME =
-  process.env.LEADS_RANGE_NAME || "Leads!A:AB"; // <-- safer default than a named range
-
+const APPS_SCRIPT_EXEC_URL = process.env.APPS_SCRIPT_EXEC_URL || ""; // <-- ADD THIS in Cloud Run env vars
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
 
@@ -50,32 +37,24 @@ function generateLeadId() {
   return `RB${num}`;
 }
 
-async function getSheetsClient() {
-  const auth = new google.auth.GoogleAuth({
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-  const authClient = await auth.getClient();
-  return google.sheets({ version: "v4", auth: authClient });
-}
-
 // Quick config check endpoint
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
-    spreadsheetIdConfigured: !!SPREADSHEET_ID,
-    spreadsheetId: SPREADSHEET_ID,
-    range: LEADS_RANGE_NAME,
+    appsScriptConfigured: !!APPS_SCRIPT_EXEC_URL,
+    appsScriptUrl: APPS_SCRIPT_EXEC_URL ? "set" : "missing",
+    stageDefault: STAGE_DEFAULT,
   });
 });
 
 // ---------------------------------------------------------------------
-// API
+// API - Receive lead from frontend, forward to Apps Script Web App
 // ---------------------------------------------------------------------
 app.post("/api/rb/lead", async (req, res) => {
   try {
     const formData = req.body || {};
 
-    // Required fields
+    // Required fields (same as your current server)
     if (!formData.fullName || !formData.primaryPhone || !formData.preferredChannel) {
       return res.status(400).json({
         success: false,
@@ -83,82 +62,65 @@ app.post("/api/rb/lead", async (req, res) => {
       });
     }
 
-    if (!SPREADSHEET_ID) {
-      return res
-        .status(500)
-        .json({ success: false, error: "Server not configured (SPREADSHEET_ID missing)." });
+    if (!APPS_SCRIPT_EXEC_URL) {
+      return res.status(500).json({
+        success: false,
+        error: "Server not configured (APPS_SCRIPT_EXEC_URL missing).",
+      });
     }
 
     const leadId = formData.leadId || generateLeadId();
     const timestamp = new Date().toISOString();
 
-    const row = [
-      timestamp,                           // 1 Timestamp
-      leadId,                              // 2 Lead ID
-      formData.fullName || "",             // 3 Full Name
-      formData.primaryPhone || "",         // 4 Primary Phone
-      formData.email || "",                // 5 Email
-      formData.preferredChannel || "",     // 6 Preferred Channel
-      formData.parish || "",               // 7 Parish
-      formData.community || "",            // 8 Community
-      formData.propertyStatus || "",       // 9 Property Status
-      formData.rebuildType || "",          // 10 Rebuild Type
-      toNumber(formData.hurricaneImpactLevel),  // 11 Hurricane Impact Level
-      toNumber(formData.projectPriority),       // 12 Project Priority
-      toNumber(formData.estimatedBudget),       // 13 Estimated Project Budget
-      toNumber(formData.comfortableMonthly),    // 14 Comfortable Monthly Payment
-      toNumber(formData.desiredTimelineMonths), // 15 Desired Start Timeline (Months)
-      formData.nhtContributor || "",        // 16 NHT Contributor
-      formData.nhtProduct || "",            // 17 NHT Product Interest
-      formData.otherFinancing || "",        // 18 Other Financing Preference
-      formData.employmentType || "",        // 19 Employment Type
-      formData.incomeRange || "",           // 20 Approx Net Monthly Income Range
-      formData.hasOverseasSponsor || "",    // 21 Has Overseas Sponsor
-      formData.sponsorCountry || "",        // 22 Sponsor Country
-      formData.willingVisit || "",          // 23 Willing to Book Site Visit
-      formData.visitWindow || "",           // 24 Preferred Site Visit Window
-      formData.hearAboutUs || "",           // 25 How Did You Hear About Us
-      toNumber(formData.leadScore),         // 26 Lead Score
-      STAGE_DEFAULT,                        // 27 Stage
-      NOTES_DEFAULT,                        // 28 Internal Notes
-    ];
+    // IMPORTANT:
+    // - Keep your existing field names.
+    // - We just add leadId/timestamp/stage/notes so your sheet can store them.
+    const payload = {
+      ...formData,
+      leadId,
+      timestamp,
+      stage: formData.stage || STAGE_DEFAULT,
+      notes: formData.notes || NOTES_DEFAULT,
+      // Optional metadata (nice for debugging)
+      source: "cloudrun",
+      userAgent: req.get("user-agent") || "",
+      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress || "",
+    };
 
-    const sheets = await getSheetsClient();
-
-    const result = await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: LEADS_RANGE_NAME,
-      valueInputOption: "USER_ENTERED",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: [row] },
+    // Forward to Apps Script (writer)
+    const r = await fetch(APPS_SCRIPT_EXEC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
+    const text = await r.text();
+    let json;
+    try { json = JSON.parse(text); } catch (_) { json = null; }
+
+    if (!r.ok) {
+      return res.status(502).json({
+        success: false,
+        error: "Apps Script writer failed.",
+        debug: { status: r.status, body: text?.slice(0, 500) },
+      });
+    }
+
+    // If Apps Script returns JSON, pass it through; otherwise return success
     return res.json({
       success: true,
       leadId,
-      updatedRange: result?.data?.updates?.updatedRange || null,
+      writer: json || { ok: true, raw: text?.slice(0, 200) },
     });
   } catch (err) {
-    // Log the REAL error details from Google APIs
-    const status = err?.code || err?.response?.status;
-    const details = err?.response?.data || err?.errors || err;
-
-    console.error("Error saving lead:", {
-      message: err?.message,
-      status,
-      details,
-    });
-
+    console.error("Error forwarding lead:", { message: err?.message, err });
     return res.status(500).json({
       success: false,
-      error: "Server error saving lead.",
-      debug: {
-        message: err?.message || "Unknown error",
-        status: status || null,
-      },
+      error: "Server error forwarding lead.",
+      debug: { message: err?.message || "Unknown error" },
     });
   }
 });
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Running on port ${port}`));
+app.listen(port, "0.0.0.0", () => console.log(`Running on port ${port}`));
