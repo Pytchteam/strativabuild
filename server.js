@@ -1,7 +1,9 @@
-// server.js (Cloud Run -> Apps Script writer)
+// server.js (Cloud Run -> Google Sheets API direct writer)
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import { google } from "googleapis";
+import crypto from "crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,15 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static site from /public
 app.use(express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 // ---------------------------------------------------------------------
-// CONFIG
+// CONFIG (set these in Cloud Run > Variables & Secrets)
 // ---------------------------------------------------------------------
-const APPS_SCRIPT_EXEC_URL = process.env.APPS_SCRIPT_EXEC_URL || "https://script.google.com/macros/s/AKfycbwkZC4gly9UPnJ9nX_vh7lh-p4E-j_PhCOpdE-xCdRx4fCLcDcX71ZHYUGA9UGE_-Et/exec"; // <-- ADD THIS in Cloud Run env vars
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || "";       // REQUIRED
+const LEADS_RANGE = process.env.LEADS_RANGE || "Leads!A:AB";   // Make sure tab "Leads" exists
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
 
@@ -29,7 +29,7 @@ const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form
 // ---------------------------------------------------------------------
 function toNumber(x) {
   const n = Number(x);
-  return Number.isFinite(n) ? n : 0;
+  return Number.isFinite(n) ? n : "";
 }
 
 function generateLeadId() {
@@ -37,24 +37,35 @@ function generateLeadId() {
   return `RB${num}`;
 }
 
-// Quick config check endpoint
-app.get("/health", (req, res) => {
+async function getSheetsClient() {
+  // Cloud Run uses its service account automatically via ADC.
+  const auth = new google.auth.GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+  const authClient = await auth.getClient();
+  return google.sheets({ version: "v4", auth: authClient });
+}
+
+// Health check
+app.get("/health", async (req, res) => {
   res.json({
     ok: true,
-    appsScriptConfigured: !!APPS_SCRIPT_EXEC_URL,
-    appsScriptUrl: APPS_SCRIPT_EXEC_URL ? "set" : "missing",
-    stageDefault: STAGE_DEFAULT,
+    spreadsheetConfigured: !!SPREADSHEET_ID,
+    spreadsheetId: SPREADSHEET_ID ? "set" : "missing",
+    range: LEADS_RANGE,
   });
 });
 
 // ---------------------------------------------------------------------
-// API - Receive lead from frontend, forward to Apps Script Web App
+// API - Save lead directly to Google Sheet
 // ---------------------------------------------------------------------
 app.post("/api/rb/lead", async (req, res) => {
+  const traceId = crypto.randomUUID();
+
   try {
     const formData = req.body || {};
 
-    // Required fields (same as your current server)
+    // Required fields
     if (!formData.fullName || !formData.primaryPhone || !formData.preferredChannel) {
       return res.status(400).json({
         success: false,
@@ -62,62 +73,81 @@ app.post("/api/rb/lead", async (req, res) => {
       });
     }
 
-    if (!APPS_SCRIPT_EXEC_URL) {
+    if (!SPREADSHEET_ID) {
       return res.status(500).json({
         success: false,
-        error: "Server not configured (APPS_SCRIPT_EXEC_URL missing).",
+        error: "Missing SPREADSHEET_ID (set Cloud Run env var).",
       });
     }
 
     const leadId = formData.leadId || generateLeadId();
     const timestamp = new Date().toISOString();
 
-    // IMPORTANT:
-    // - Keep your existing field names.
-    // - We just add leadId/timestamp/stage/notes so your sheet can store them.
-    const payload = {
-      ...formData,
-      leadId,
-      timestamp,
-      stage: formData.stage || STAGE_DEFAULT,
-      notes: formData.notes || NOTES_DEFAULT,
-      // Optional metadata (nice for debugging)
-      source: "cloudrun",
-      userAgent: req.get("user-agent") || "",
-      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress || "",
-    };
+    // IMPORTANT: Keep your existing field names coming from frontend.
+    // We’re only mapping them into a row array.
+    const row = [
+      timestamp,                           // 1 Timestamp
+      leadId,                              // 2 Lead ID
+      formData.fullName || "",             // 3 Full Name
+      formData.primaryPhone || "",         // 4 Primary Phone
+      formData.email || "",                // 5 Email
+      formData.preferredChannel || "",     // 6 Preferred Channel
+      formData.parish || "",               // 7 Parish
+      formData.community || "",            // 8 Community
+      formData.propertyStatus || "",       // 9 Property Status
+      formData.rebuildType || "",          // 10 Rebuild Type
+      toNumber(formData.hurricaneImpactLevel),  // 11 Hurricane Impact Level
+      toNumber(formData.projectPriority),       // 12 Project Priority
+      toNumber(formData.estimatedBudget),       // 13 Estimated Project Budget
+      toNumber(formData.comfortableMonthly),    // 14 Comfortable Monthly Payment
+      toNumber(formData.desiredTimelineMonths), // 15 Desired Start Timeline (Months)
+      formData.nhtContributor || "",        // 16 NHT Contributor
+      formData.nhtProduct || "",            // 17 NHT Product Interest
+      formData.otherFinancing || "",        // 18 Other Financing Preference
+      formData.employmentType || "",        // 19 Employment Type
+      formData.incomeRange || "",           // 20 Approx Net Monthly Income Range
+      formData.hasOverseasSponsor || "",    // 21 Has Overseas Sponsor
+      formData.sponsorCountry || "",        // 22 Sponsor Country
+      formData.willingVisit || "",          // 23 Willing to Book Site Visit
+      formData.visitWindow || "",           // 24 Preferred Site Visit Window
+      formData.hearAboutUs || "",           // 25 How Did You Hear About Us
+      toNumber(formData.leadScore),         // 26 Lead Score
+      formData.stage || STAGE_DEFAULT,      // 27 Stage
+      formData.notes || NOTES_DEFAULT,      // 28 Internal Notes
+      traceId,                              // 29 TraceId (optional but SUPER helpful)
+    ];
 
-    // Forward to Apps Script (writer)
-    const r = await fetch(APPS_SCRIPT_EXEC_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+    const sheets = await getSheetsClient();
+
+    const result = await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: LEADS_RANGE,
+      valueInputOption: "USER_ENTERED",
+      insertDataOption: "INSERT_ROWS",
+      requestBody: { values: [row] },
     });
 
-    const text = await r.text();
-    let json;
-    try { json = JSON.parse(text); } catch (_) { json = null; }
-
-    if (!r.ok) {
-      return res.status(502).json({
-        success: false,
-        error: "Apps Script writer failed.",
-        debug: { status: r.status, body: text?.slice(0, 500) },
-      });
-    }
-
-    // If Apps Script returns JSON, pass it through; otherwise return success
     return res.json({
       success: true,
       leadId,
-      writer: json || { ok: true, raw: text?.slice(0, 200) },
+      traceId,
+      updatedRange: result?.data?.updates?.updatedRange || null,
     });
   } catch (err) {
-    console.error("Error forwarding lead:", { message: err?.message, err });
+    const status = err?.code || err?.response?.status || null;
+    const details = err?.response?.data || err?.errors || err;
+
+    console.error("Sheets append failed:", {
+      traceId,
+      message: err?.message,
+      status,
+      details,
+    });
+
     return res.status(500).json({
       success: false,
-      error: "Server error forwarding lead.",
-      debug: { message: err?.message || "Unknown error" },
+      error: "Failed to write to Google Sheets.",
+      debug: { traceId, status, message: err?.message || "Unknown error" },
     });
   }
 });
