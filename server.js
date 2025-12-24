@@ -47,7 +47,7 @@ app.get("/", (req, res) =>
 // ---------------------------------------------------------------------
 // CONFIG (set these in Cloud Run > Variables & Secrets)
 // ---------------------------------------------------------------------
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID || ""; // REQUIRED
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || "1OJmAX__67ORdA_T5yOtEiW4wDIpLmxzL7BnE15ldpyE"; // REQUIRED
 const LEADS_SHEET_NAME = process.env.LEADS_SHEET_NAME || "Leads";
 const LEADS_RANGE_NAME =
   process.env.LEADS_RANGE_NAME || `${LEADS_SHEET_NAME}!A:AB`;
