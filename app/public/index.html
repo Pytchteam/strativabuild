@@ -57,8 +57,8 @@
       }
 
       body {
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", sans-serif;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         background: radial-gradient(circle at top, #101633 0, #030712 55%);
         color: var(--rb-ink);
         display: flex;
@@ -79,14 +79,12 @@
         background: radial-gradient(circle, rgba(20, 184, 166, 0.6), transparent);
         animation: rb-floatOrb 12s ease-in-out infinite;
       }
-
       .rb-orb--1 {
         width: 320px;
         height: 320px;
         top: 8%;
         left: 10%;
       }
-
       .rb-orb--2 {
         width: 260px;
         height: 260px;
@@ -94,7 +92,6 @@
         right: 12%;
         animation-duration: 16s;
       }
-
       .rb-orb--3 {
         width: 210px;
         height: 210px;
@@ -102,7 +99,6 @@
         left: 40%;
         animation-duration: 20s;
       }
-
       @keyframes rb-floatOrb {
         0% {
           transform: translateY(0px);
@@ -139,13 +135,11 @@
         transition: transform var(--rb-transition), box-shadow var(--rb-transition),
           background var(--rb-transition);
       }
-
       @media (min-width: 720px) {
         .rb-card {
           padding: 32px 30px 26px;
         }
       }
-
       .rb-card--active {
         transform: translateY(-4px) scale(1.01);
       }
@@ -156,13 +150,11 @@
         justify-content: space-between;
         gap: 16px;
       }
-
       .rb-brand-block {
         display: flex;
         align-items: center;
         gap: 12px;
       }
-
       .rb-logo-circle {
         width: 40px;
         height: 40px;
@@ -180,13 +172,11 @@
         font-size: 18px;
         box-shadow: 0 0 15px rgba(245, 196, 83, 0.7);
       }
-
       .rb-brand-text {
         display: flex;
         flex-direction: column;
         gap: 2px;
       }
-
       .rb-brand-text-title {
         font-family: "Poppins", system-ui, sans-serif;
         font-weight: 600;
@@ -194,12 +184,10 @@
         letter-spacing: 0.02em;
         color: #030712;
       }
-
       .rb-brand-text-sub {
         font-size: 12px;
         color: var(--rb-ink-muted);
       }
-
       .rb-badge-quickcheck {
         font-size: 11px;
         padding: 4px 10px;
@@ -212,11 +200,9 @@
         gap: 6px;
         white-space: nowrap;
       }
-
       .rb-badge-quickcheck i {
         font-size: 10px;
       }
-
       @media (max-width: 480px) {
         .rb-header {
           flex-direction: column;
@@ -231,7 +217,6 @@
         gap: 10px;
         margin-top: 4px;
       }
-
       .rb-progress-labels {
         display: flex;
         justify-content: space-between;
@@ -239,7 +224,6 @@
         font-size: 11px;
         color: var(--rb-ink-muted);
       }
-
       .rb-progress-steps {
         position: relative;
         display: grid;
@@ -247,7 +231,6 @@
         gap: 0;
         align-items: center;
       }
-
       .rb-progress-line {
         position: absolute;
         left: 10%;
@@ -261,7 +244,6 @@
         );
         z-index: 0;
       }
-
       .rb-progress-line-fill {
         position: absolute;
         left: 10%;
@@ -277,14 +259,12 @@
         transform-origin: left center;
         transition: width var(--rb-transition);
       }
-
       .rb-step-dot-wrapper {
         position: relative;
         z-index: 2;
         display: flex;
         justify-content: center;
       }
-
       .rb-step-dot {
         width: 22px;
         height: 22px;
@@ -300,7 +280,6 @@
           background var(--rb-transition), color var(--rb-transition),
           box-shadow var(--rb-transition);
       }
-
       .rb-step-dot.is-active {
         border-color: rgba(245, 196, 83, 0.85);
         background: radial-gradient(
@@ -312,7 +291,6 @@
         transform: scale(1.07);
         box-shadow: 0 0 16px rgba(245, 196, 83, 0.75);
       }
-
       .rb-step-dot.is-complete {
         border-color: rgba(20, 184, 166, 0.8);
         background: #ecfdf5;
@@ -325,25 +303,20 @@
         min-height: 260px;
         position: relative;
       }
-
       .rb-step {
         display: none;
         animation-duration: 280ms;
         animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
       }
-
       .rb-step.is-active {
         display: block;
       }
-
       .rb-step-enter {
         animation-name: rb-step-enter;
       }
-
       .rb-step-exit {
         animation-name: rb-step-exit;
       }
-
       @keyframes rb-step-enter {
         from {
           opacity: 0;
@@ -354,7 +327,6 @@
           transform: translateX(0);
         }
       }
-
       @keyframes rb-step-exit {
         from {
           opacity: 1;
@@ -369,7 +341,6 @@
       .rb-step-header {
         margin-bottom: 14px;
       }
-
       .rb-step-title {
         font-family: "Poppins", system-ui, sans-serif;
         font-size: 20px;
@@ -377,7 +348,6 @@
         color: #030712;
         margin: 0 0 4px;
       }
-
       .rb-step-subtitle {
         margin: 0;
         font-size: 13px;
@@ -390,19 +360,16 @@
         grid-template-columns: minmax(0, 1fr);
         gap: 14px 18px;
       }
-
       @media (min-width: 720px) {
         .rb-grid--two {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
-
       .rb-field {
         display: flex;
         flex-direction: column;
         gap: 4px;
       }
-
       .rb-field-label {
         font-size: 13px;
         font-weight: 500;
@@ -411,16 +378,13 @@
         align-items: center;
         gap: 6px;
       }
-
       .rb-field-label span.rb-required {
         color: var(--rb-danger);
       }
-
       .rb-field-helper {
         font-size: 11px;
         color: var(--rb-ink-muted);
       }
-
       .rb-input,
       .rb-select,
       .rb-textarea {
@@ -436,12 +400,10 @@
           transform var(--rb-transition);
         min-height: 38px;
       }
-
       .rb-textarea {
         resize: vertical;
         min-height: 70px;
       }
-
       .rb-input:focus-visible,
       .rb-select:focus-visible,
       .rb-textarea:focus-visible {
@@ -449,13 +411,11 @@
         box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.7);
         background: #f9fafb;
       }
-
       .rb-field-error {
         font-size: 11px;
         color: var(--rb-danger);
         margin-top: 2px;
       }
-
       .rb-field-invalid .rb-input,
       .rb-field-invalid .rb-select {
         border-color: rgba(248, 113, 113, 0.95);
@@ -468,7 +428,6 @@
         flex-wrap: wrap;
         gap: 8px;
       }
-
       .rb-pill-option {
         border-radius: var(--rb-radius-pill);
         border: 1px solid var(--rb-line);
@@ -485,16 +444,13 @@
           background var(--rb-transition), box-shadow var(--rb-transition),
           transform var(--rb-transition), color var(--rb-transition);
       }
-
       .rb-pill-option span.rb-pill-desc {
         font-size: 11px;
         color: #6b7280;
       }
-
       .rb-pill-option input[type="radio"] {
         display: none;
       }
-
       .rb-pill-option.is-selected {
         border-color: rgba(20, 184, 166, 0.9);
         background: linear-gradient(
@@ -513,13 +469,11 @@
         flex-direction: column;
         gap: 6px;
       }
-
       .rb-range-row {
         display: flex;
         align-items: center;
         gap: 10px;
       }
-
       .rb-range {
         -webkit-appearance: none;
         appearance: none;
@@ -534,7 +488,6 @@
         outline: none;
         transition: background var(--rb-transition);
       }
-
       .rb-range::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -551,7 +504,6 @@
         cursor: pointer;
         transition: transform var(--rb-transition), box-shadow var(--rb-transition);
       }
-
       .rb-range::-moz-range-thumb {
         width: 18px;
         height: 18px;
@@ -566,13 +518,11 @@
         cursor: pointer;
         transition: transform var(--rb-transition), box-shadow var(--rb-transition);
       }
-
       .rb-range::-webkit-slider-thumb:active,
       .rb-range::-moz-range-thumb:active {
         transform: scale(0.95);
         box-shadow: 0 0 0 5px rgba(20, 184, 166, 0.45);
       }
-
       .rb-range-value-tag {
         font-size: 11px;
         padding: 2px 8px;
@@ -581,17 +531,14 @@
         color: #e5e7eb;
         white-space: nowrap;
       }
-
       .rb-range-label {
         font-size: 12px;
         color: var(--rb-ink-muted);
       }
-
       .rb-live-line {
         font-size: 12px;
         color: #111827;
       }
-
       .rb-live-line strong {
         font-weight: 600;
       }
@@ -606,11 +553,9 @@
         cursor: pointer;
         margin-top: 4px;
       }
-
       .rb-learn-toggle i {
         font-size: 10px;
       }
-
       .rb-learn-body {
         margin-top: 4px;
         padding: 8px 10px;
@@ -621,7 +566,6 @@
         color: #0f172a;
         display: none;
       }
-
       .rb-learn-body.is-open {
         display: block;
       }
@@ -635,7 +579,6 @@
         flex-direction: column;
         gap: 8px;
       }
-
       @media (min-width: 640px) {
         .rb-nav-row {
           flex-direction: row;
@@ -643,12 +586,10 @@
           justify-content: space-between;
         }
       }
-
       .rb-nav-buttons {
         display: flex;
         gap: 10px;
       }
-
       .rb-btn {
         border-radius: var(--rb-radius-pill);
         border: none;
@@ -663,15 +604,13 @@
         box-shadow: var(--rb-shadow-btn);
         outline: none;
         min-height: 40px;
-        transition: transform var(--rb-transition),
-          box-shadow var(--rb-transition), background var(--rb-transition),
-          color var(--rb-transition), opacity var(--rb-transition);
+        transition: transform var(--rb-transition), box-shadow var(--rb-transition),
+          background var(--rb-transition), color var(--rb-transition),
+          opacity var(--rb-transition);
       }
-
       .rb-btn:focus-visible {
         box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px rgba(20, 184, 166, 0.7);
       }
-
       .rb-btn-primary {
         background: linear-gradient(
           135deg,
@@ -680,36 +619,30 @@
         );
         color: #020617;
       }
-
       .rb-btn-ghost {
         background: rgba(15, 23, 42, 0.02);
         color: #0f172a;
         border: 1px solid rgba(148, 163, 184, 0.7);
         box-shadow: none;
       }
-
       .rb-btn-primary:hover {
         transform: translateY(-1px) scale(1.02);
         box-shadow: 0 14px 30px rgba(15, 23, 42, 0.5),
           0 0 32px rgba(20, 184, 166, 0.45);
       }
-
       .rb-btn-ghost:hover {
         background: rgba(148, 163, 184, 0.1);
       }
-
       .rb-btn:active {
         transform: translateY(0) scale(0.97);
         box-shadow: 0 8px 18px rgba(15, 23, 42, 0.4);
       }
-
       .rb-btn[disabled] {
         opacity: 0.6;
         cursor: default;
         box-shadow: none;
         transform: none;
       }
-
       .rb-nav-footnote {
         font-size: 11px;
         color: var(--rb-ink-muted);
@@ -732,19 +665,16 @@
         flex-direction: column;
         gap: 8px;
       }
-
       .rb-summary-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 8px;
       }
-
       .rb-summary-title {
         font-size: 14px;
         font-weight: 500;
       }
-
       .rb-readiness-chip {
         font-size: 11px;
         padding: 4px 9px;
@@ -755,36 +685,17 @@
         border: 1px solid rgba(148, 163, 184, 0.4);
         background: rgba(15, 23, 42, 0.8);
       }
-
-      .rb-readiness-chip.rb-ready-high {
-        border-color: rgba(34, 197, 94, 0.7);
-        background: rgba(22, 101, 52, 0.4);
-      }
-
-      .rb-readiness-chip.rb-ready-med {
-        border-color: rgba(234, 179, 8, 0.7);
-        background: rgba(113, 63, 18, 0.35);
-      }
-
-      .rb-readiness-chip.rb-ready-low {
-        border-color: rgba(248, 113, 113, 0.7);
-        background: rgba(127, 29, 29, 0.4);
-      }
-
       .rb-summary-body {
         font-size: 12px;
         line-height: 1.5;
       }
-
       .rb-summary-line {
         margin-bottom: 4px;
       }
-
       .rb-summary-highlight {
         font-weight: 600;
         color: #facc15;
       }
-
       .rb-summary-disclaimer {
         margin-top: 4px;
         font-size: 11px;
@@ -802,20 +713,17 @@
         flex-direction: column;
         gap: 6px;
       }
-
       .rb-radio-stack {
         display: flex;
         flex-direction: column;
         gap: 6px;
       }
-
       .rb-radio-line {
         display: flex;
         align-items: center;
         gap: 8px;
         font-size: 12px;
       }
-
       .rb-radio-line input[type="radio"] {
         width: 16px;
         height: 16px;
@@ -827,7 +735,6 @@
         text-align: center;
         padding: 14px 6px 6px;
       }
-
       .rb-success-title {
         font-family: "Poppins", system-ui, sans-serif;
         font-size: 20px;
@@ -835,18 +742,15 @@
         margin-bottom: 4px;
         color: #022c22;
       }
-
       .rb-success-copy {
         font-size: 13px;
         color: #065f46;
       }
-
       .rb-success-meta {
         font-size: 11px;
         color: #4b5563;
         margin-top: 6px;
       }
-
       .rb-success-check {
         margin: 6px auto 10px;
         width: 60px;
@@ -858,7 +762,6 @@
         justify-content: center;
         position: relative;
       }
-
       .rb-success-check::before {
         content: "";
         position: absolute;
@@ -869,13 +772,11 @@
         stroke-dashoffset: 188;
         animation: rb-circle-draw 0.7s ease-out forwards;
       }
-
       @keyframes rb-circle-draw {
         to {
           stroke-dashoffset: 0;
         }
       }
-
       .rb-success-check i {
         color: #16a34a;
         font-size: 26px;
@@ -883,7 +784,6 @@
         transform: scale(0.7);
         animation: rb-check-pop 0.35s ease-out 0.55s forwards;
       }
-
       @keyframes rb-check-pop {
         0% {
           opacity: 0;
@@ -894,14 +794,11 @@
           transform: scale(1);
         }
       }
-
-      /* Success CTA button wrapper + link reset */
       .rb-success-actions {
         margin-top: 12px;
         display: flex;
         justify-content: center;
       }
-
       .rb-link-as-btn {
         text-decoration: none;
       }
@@ -916,7 +813,6 @@
         padding: 8px 10px;
         border: 1px solid #fecaca;
       }
-
       .rb-global-error.is-visible {
         display: block;
       }
@@ -932,8 +828,8 @@
         font-size: 12px;
         color: #6b7280;
         backdrop-filter: blur(2px);
+        z-index: 5;
       }
-
       .rb-spinner {
         border-radius: 999px;
         border: 3px solid #e5e7eb;
@@ -943,7 +839,6 @@
         animation: rb-spin 0.75s linear infinite;
         margin-right: 8px;
       }
-
       @keyframes rb-spin {
         to {
           transform: rotate(360deg);
@@ -956,45 +851,35 @@
           align-items: flex-start;
           padding: 12px 10px 24px;
         }
-
         .rb-card {
           padding: 20px 16px 18px;
           border-radius: 18px;
         }
-
         .rb-step-title {
           font-size: 18px;
         }
-
         .rb-step-subtitle {
           font-size: 12px;
         }
-
         .rb-progress-labels span {
           font-size: 10px;
         }
-
         .rb-grid {
           gap: 12px 14px;
         }
-
         .rb-nav-row {
           gap: 12px;
         }
-
         .rb-nav-buttons {
           flex-direction: column-reverse;
           width: 100%;
         }
-
         .rb-btn {
           width: 100%;
         }
-
         .rb-summary-card {
           padding: 12px 10px;
         }
-
         .rb-cta-block {
           padding: 10px;
         }
@@ -1008,7 +893,6 @@
           transition-duration: 0.001ms !important;
           scroll-behavior: auto !important;
         }
-
         .rb-orb {
           display: none;
         }
@@ -1029,9 +913,7 @@
             <div class="rb-logo-circle">S</div>
             <div class="rb-brand-text">
               <div class="rb-brand-text-title">Strativa Rebuild</div>
-              <div class="rb-brand-text-sub">
-                Quick pre-qual check, not a loan approval.
-              </div>
+              <div class="rb-brand-text-sub">Quick pre-qual check, not a loan approval.</div>
             </div>
           </div>
           <span class="rb-badge-quickcheck">
@@ -1051,21 +933,12 @@
           <div class="rb-progress-steps">
             <div class="rb-progress-line"></div>
             <div class="rb-progress-line-fill" id="rbProgressFill"></div>
-            <div class="rb-step-dot-wrapper">
-              <div class="rb-step-dot is-active" data-step-dot="1">1</div>
-            </div>
-            <div class="rb-step-dot-wrapper">
-              <div class="rb-step-dot" data-step-dot="2">2</div>
-            </div>
-            <div class="rb-step-dot-wrapper">
-              <div class="rb-step-dot" data-step-dot="3">3</div>
-            </div>
-            <div class="rb-step-dot-wrapper">
-              <div class="rb-step-dot" data-step-dot="4">4</div>
-            </div>
-            <div class="rb-step-dot-wrapper">
-              <div class="rb-step-dot" data-step-dot="5">5</div>
-            </div>
+
+            <div class="rb-step-dot-wrapper"><div class="rb-step-dot is-active" data-step-dot="1">1</div></div>
+            <div class="rb-step-dot-wrapper"><div class="rb-step-dot" data-step-dot="2">2</div></div>
+            <div class="rb-step-dot-wrapper"><div class="rb-step-dot" data-step-dot="3">3</div></div>
+            <div class="rb-step-dot-wrapper"><div class="rb-step-dot" data-step-dot="4">4</div></div>
+            <div class="rb-step-dot-wrapper"><div class="rb-step-dot" data-step-dot="5">5</div></div>
           </div>
         </div>
 
@@ -1079,86 +952,48 @@
           </div>
 
           <!-- STEP 1 -->
-          <section
-            class="rb-step is-active"
-            data-step="1"
-            aria-labelledby="rbStep1Title"
-          >
+          <section class="rb-step is-active" data-step="1" aria-labelledby="rbStep1Title">
             <header class="rb-step-header">
               <h1 class="rb-step-title" id="rbStep1Title">
                 Let&rsquo;s check your rebuild options in under a minute
               </h1>
               <p class="rb-step-subtitle">
                 Answer a few quick questions to see what kind of support and
-                &ldquo;Build on Credit&rdquo; options might fit you. No
-                obligation, no hard credit checks.
+                &ldquo;Build on Credit&rdquo; options might fit you. No obligation, no hard credit checks.
               </p>
             </header>
 
             <div class="rb-grid rb-grid--two">
               <div class="rb-field" data-field="fullName">
                 <label class="rb-field-label" for="rbFullName">
-                  What&rsquo;s your full name?
-                  <span class="rb-required">*</span>
+                  What&rsquo;s your full name? <span class="rb-required">*</span>
                 </label>
-                <input
-                  id="rbFullName"
-                  class="rb-input"
-                  type="text"
-                  autocomplete="name"
-                  placeholder="E.g. Shanice Brown"
-                />
-                <div class="rb-field-helper">
-                  We&rsquo;ll use this to personalize your results.
-                </div>
+                <input id="rbFullName" class="rb-input" type="text" autocomplete="name" placeholder="E.g. Shanice Brown" />
+                <div class="rb-field-helper">We&rsquo;ll use this to personalize your results.</div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="primaryPhone">
                 <label class="rb-field-label" for="rbPrimaryPhone">
-                  Best number for WhatsApp or calls
-                  <span class="rb-required">*</span>
+                  Best number for WhatsApp or calls <span class="rb-required">*</span>
                 </label>
-                <input
-                  id="rbPrimaryPhone"
-                  class="rb-input"
-                  type="tel"
-                  autocomplete="tel"
-                  placeholder="E.g. 876-555-1234"
-                />
-                <div class="rb-field-helper">
-                  We&rsquo;ll send your results and next steps here.
-                </div>
+                <input id="rbPrimaryPhone" class="rb-input" type="tel" autocomplete="tel" placeholder="E.g. 876-555-1234" />
+                <div class="rb-field-helper">We&rsquo;ll send your results and next steps here.</div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="email">
-                <label class="rb-field-label" for="rbEmail">
-                  Email (optional)
-                </label>
-                <input
-                  id="rbEmail"
-                  class="rb-input"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="you@example.com"
-                />
-                <div class="rb-field-helper">
-                  Only if you&rsquo;d like a copy by email too.
-                </div>
+                <label class="rb-field-label" for="rbEmail">Email (optional)</label>
+                <input id="rbEmail" class="rb-input" type="email" autocomplete="email" placeholder="you@example.com" />
+                <div class="rb-field-helper">Only if you&rsquo;d like a copy by email too.</div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="preferredChannel">
                 <label class="rb-field-label" for="rbPreferredChannel">
-                  How should we reach you with your results?
-                  <span class="rb-required">*</span>
+                  How should we reach you with your results? <span class="rb-required">*</span>
                 </label>
-                <select
-                  id="rbPreferredChannel"
-                  class="rb-select"
-                  aria-label="Preferred channel"
-                >
+                <select id="rbPreferredChannel" class="rb-select" aria-label="Preferred channel">
                   <option value="">Select one</option>
                   <option value="WhatsApp">WhatsApp</option>
                   <option value="Phone Call">Phone Call</option>
@@ -1168,19 +1003,11 @@
               </div>
 
               <div class="rb-field" data-field="hearAboutUs">
-                <label class="rb-field-label" for="rbHearAboutUs">
-                  How did you hear about Strativa?
-                </label>
-                <select
-                  id="rbHearAboutUs"
-                  class="rb-select"
-                  aria-label="How did you hear about us"
-                >
+                <label class="rb-field-label" for="rbHearAboutUs">How did you hear about Strativa?</label>
+                <select id="rbHearAboutUs" class="rb-select" aria-label="How did you hear about us">
                   <option value="">Select one</option>
                 </select>
-                <div class="rb-field-helper">
-                  Helps us know what&rsquo;s working.
-                </div>
+                <div class="rb-field-helper">Helps us know what&rsquo;s working.</div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
             </div>
@@ -1189,20 +1016,14 @@
           <!-- STEP 2 -->
           <section class="rb-step" data-step="2" aria-labelledby="rbStep2Title">
             <header class="rb-step-header">
-              <h2 class="rb-step-title" id="rbStep2Title">
-                Tell us about the property
-              </h2>
-              <p class="rb-step-subtitle">
-                This helps us understand where the project is and what we&rsquo;re
-                working with.
-              </p>
+              <h2 class="rb-step-title" id="rbStep2Title">Tell us about the property</h2>
+              <p class="rb-step-subtitle">This helps us understand where the project is and what we&rsquo;re working with.</p>
             </header>
 
             <div class="rb-grid rb-grid--two">
               <div class="rb-field" data-field="parish">
                 <label class="rb-field-label" for="rbParish">
-                  Which parish is the property in?
-                  <span class="rb-required">*</span>
+                  Which parish is the property in? <span class="rb-required">*</span>
                 </label>
                 <select id="rbParish" class="rb-select" aria-label="Parish">
                   <option value="">Select parish</option>
@@ -1211,64 +1032,29 @@
               </div>
 
               <div class="rb-field" data-field="community">
-                <label class="rb-field-label" for="rbCommunity">
-                  Community or area
-                </label>
-                <input
-                  id="rbCommunity"
-                  class="rb-input"
-                  type="text"
-                  placeholder="E.g. Portmore, St. Catherine"
-                />
+                <label class="rb-field-label" for="rbCommunity">Community or area</label>
+                <input id="rbCommunity" class="rb-input" type="text" placeholder="E.g. Portmore, St. Catherine" />
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
-              <div
-                class="rb-field"
-                data-field="propertyStatus"
-                style="grid-column:1/-1;"
-              >
+              <div class="rb-field" data-field="propertyStatus" style="grid-column:1/-1;">
                 <label class="rb-field-label">What&rsquo;s your current situation?</label>
                 <div class="rb-pill-group" id="rbPropertyStatusGroup">
                   <label class="rb-pill-option">
-                    <input
-                      type="radio"
-                      name="rbPropertyStatus"
-                      value="Own Land Only"
-                    />
-                    Own land only
-                    <span class="rb-pill-desc">
-                      Land is there, build hasn&rsquo;t started yet.
-                    </span>
+                    <input type="radio" name="rbPropertyStatus" value="Own Land Only" />
+                    Own land only <span class="rb-pill-desc">Land is there, build hasn&rsquo;t started yet.</span>
                   </label>
                   <label class="rb-pill-option">
-                    <input
-                      type="radio"
-                      name="rbPropertyStatus"
-                      value="Own House & Land"
-                    />
-                    Own house &amp; land
-                    <span class="rb-pill-desc">
-                      You already have a home on the property.
-                    </span>
+                    <input type="radio" name="rbPropertyStatus" value="Own House & Land" />
+                    Own house &amp; land <span class="rb-pill-desc">You already have a home on the property.</span>
                   </label>
                   <label class="rb-pill-option">
-                    <input
-                      type="radio"
-                      name="rbPropertyStatus"
-                      value="Living with Family"
-                    />
-                    Living with family
-                    <span class="rb-pill-desc">
-                      Thinking about your own space.
-                    </span>
+                    <input type="radio" name="rbPropertyStatus" value="Living with Family" />
+                    Living with family <span class="rb-pill-desc">Thinking about your own space.</span>
                   </label>
                   <label class="rb-pill-option">
                     <input type="radio" name="rbPropertyStatus" value="Renting" />
-                    Renting
-                    <span class="rb-pill-desc">
-                      Exploring options to build or buy.
-                    </span>
+                    Renting <span class="rb-pill-desc">Exploring options to build or buy.</span>
                   </label>
                   <label class="rb-pill-option">
                     <input type="radio" name="rbPropertyStatus" value="Other" />
@@ -1278,36 +1064,22 @@
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
-              <div
-                class="rb-field"
-                data-field="rebuildType"
-                style="grid-column:1/-1;"
-              >
+              <div class="rb-field" data-field="rebuildType" style="grid-column:1/-1;">
                 <label class="rb-field-label" for="rbRebuildType">
-                  What are you mainly looking to do?
-                  <span class="rb-required">*</span>
+                  What are you mainly looking to do? <span class="rb-required">*</span>
                 </label>
                 <select id="rbRebuildType" class="rb-select" aria-label="Rebuild type">
                   <option value="">Select one</option>
                 </select>
-                <div
-                  class="rb-learn-toggle"
-                  data-learn-target="rbRebuildLearn"
-                  role="button"
-                  tabindex="0"
-                >
+                <div class="rb-learn-toggle" data-learn-target="rbRebuildLearn" role="button" tabindex="0">
                   <i class="fa-regular fa-circle-question"></i>
                   <span>Learn more about these options</span>
                 </div>
                 <div class="rb-learn-body" id="rbRebuildLearn">
-                  <strong>Repair:</strong> Roof leaks, cracked walls, damaged
-                  areas, and similar issues.<br />
-                  <strong>Extension:</strong> Add a room, an extra floor, or new
-                  livable space.<br />
-                  <strong>Brand new build:</strong> Starting a new home from
-                  scratch.<br />
-                  <strong>Finish existing shell:</strong> Completing a structure
-                  that was started but not finished.
+                  <strong>Repair:</strong> Roof leaks, cracked walls, damaged areas, and similar issues.<br />
+                  <strong>Extension:</strong> Add a room, an extra floor, or new livable space.<br />
+                  <strong>Brand new build:</strong> Starting a new home from scratch.<br />
+                  <strong>Finish existing shell:</strong> Completing a structure that was started but not finished.
                 </div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
@@ -1318,43 +1090,21 @@
                 </label>
                 <div class="rb-range-wrapper">
                   <div class="rb-range-row">
-                    <input
-                      id="rbHurricaneImpact"
-                      class="rb-range"
-                      type="range"
-                      min="1"
-                      max="5"
-                      step="1"
-                      value="3"
-                    />
+                    <input id="rbHurricaneImpact" class="rb-range" type="range" min="1" max="5" step="1" value="3" />
                     <span class="rb-range-value-tag" id="rbHurricaneImpactValue">3</span>
                   </div>
-                  <div class="rb-range-label" id="rbHurricaneImpactLabel">
-                    Moderate damage
-                  </div>
+                  <div class="rb-range-label" id="rbHurricaneImpactLabel">Moderate damage</div>
                 </div>
               </div>
 
               <div class="rb-field" data-field="projectPriority">
-                <label class="rb-field-label" for="rbProjectPriority">
-                  How urgent is this project for you?
-                </label>
+                <label class="rb-field-label" for="rbProjectPriority">How urgent is this project for you?</label>
                 <div class="rb-range-wrapper">
                   <div class="rb-range-row">
-                    <input
-                      id="rbProjectPriority"
-                      class="rb-range"
-                      type="range"
-                      min="1"
-                      max="5"
-                      step="1"
-                      value="3"
-                    />
+                    <input id="rbProjectPriority" class="rb-range" type="range" min="1" max="5" step="1" value="3" />
                     <span class="rb-range-value-tag" id="rbProjectPriorityValue">3</span>
                   </div>
-                  <div class="rb-range-label" id="rbProjectPriorityLabel">
-                    Important but flexible
-                  </div>
+                  <div class="rb-range-label" id="rbProjectPriorityLabel">Important but flexible</div>
                 </div>
               </div>
             </div>
@@ -1363,114 +1113,58 @@
           <!-- STEP 3 -->
           <section class="rb-step" data-step="3" aria-labelledby="rbStep3Title">
             <header class="rb-step-header">
-              <h2 class="rb-step-title" id="rbStep3Title">
-                Let&rsquo;s talk numbers (lightly)
-              </h2>
-              <p class="rb-step-subtitle">
-                No need to be exact &mdash; this just helps us understand your
-                comfort zone.
-              </p>
+              <h2 class="rb-step-title" id="rbStep3Title">Let&rsquo;s talk numbers (lightly)</h2>
+              <p class="rb-step-subtitle">No need to be exact &mdash; this just helps us understand your comfort zone.</p>
             </header>
 
             <div class="rb-grid">
               <div class="rb-field" data-field="estimatedBudget">
                 <label class="rb-field-label" for="rbEstimatedBudgetRange">
-                  Rough idea of your total project budget (JMD)
-                  <span class="rb-required">*</span>
+                  Rough idea of your total project budget (JMD) <span class="rb-required">*</span>
                 </label>
                 <div class="rb-range-wrapper">
                   <div class="rb-range-row">
-                    <input
-                      id="rbEstimatedBudgetRange"
-                      class="rb-range"
-                      type="range"
-                      min="1000000"
-                      max="50000000"
-                      step="500000"
-                      value="18000000"
-                    />
+                    <input id="rbEstimatedBudgetRange" class="rb-range" type="range" min="1000000" max="50000000" step="500000" value="18000000" />
                     <span class="rb-range-value-tag" id="rbEstimatedBudgetTag">J$18,000,000</span>
                   </div>
-                  <input
-                    id="rbEstimatedBudgetInput"
-                    class="rb-input"
-                    type="number"
-                    min="1000000"
-                    max="50000000"
-                    step="500000"
-                  />
+                  <input id="rbEstimatedBudgetInput" class="rb-input" type="number" min="1000000" max="50000000" step="500000" />
                   <div class="rb-live-line" id="rbBudgetLiveLine">
-                    You&rsquo;re aiming for around
-                    <strong>J$18,000,000</strong> total.
+                    You&rsquo;re aiming for around <strong>J$18,000,000</strong> total.
                   </div>
-                  <div class="rb-field-helper">
-                    You can adjust this later after we do a proper estimate.
-                  </div>
+                  <div class="rb-field-helper">You can adjust this later after we do a proper estimate.</div>
                 </div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="monthlyPayment">
                 <label class="rb-field-label" for="rbMonthlyPaymentRange">
-                  What&rsquo;s a comfortable monthly payment range for you? (JMD)
-                  <span class="rb-required">*</span>
+                  What&rsquo;s a comfortable monthly payment range for you? (JMD) <span class="rb-required">*</span>
                 </label>
                 <div class="rb-range-wrapper">
                   <div class="rb-range-row">
-                    <input
-                      id="rbMonthlyPaymentRange"
-                      class="rb-range"
-                      type="range"
-                      min="30000"
-                      max="400000"
-                      step="5000"
-                      value="120000"
-                    />
+                    <input id="rbMonthlyPaymentRange" class="rb-range" type="range" min="30000" max="400000" step="5000" value="120000" />
                     <span class="rb-range-value-tag" id="rbMonthlyPaymentTag">J$120,000</span>
                   </div>
-                  <input
-                    id="rbMonthlyPaymentInput"
-                    class="rb-input"
-                    type="number"
-                    min="30000"
-                    max="400000"
-                    step="5000"
-                  />
+                  <input id="rbMonthlyPaymentInput" class="rb-input" type="number" min="30000" max="400000" step="5000" />
                   <div class="rb-live-line" id="rbPaymentLiveLine">
-                    You&rsquo;d like to keep monthly payments around
-                    <strong>J$120,000</strong>.
+                    You&rsquo;d like to keep monthly payments around <strong>J$120,000</strong>.
                   </div>
-                  <div class="rb-field-helper">
-                    Not a commitment &mdash; just what feels realistic right now.
-                  </div>
+                  <div class="rb-field-helper">Not a commitment &mdash; just what feels realistic right now.</div>
                 </div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="startTimeline">
-                <label class="rb-field-label" for="rbStartTimeline">
-                  When would you ideally like to get started?
-                </label>
+                <label class="rb-field-label" for="rbStartTimeline">When would you ideally like to get started?</label>
                 <div class="rb-range-wrapper">
                   <div class="rb-range-row">
-                    <input
-                      id="rbStartTimeline"
-                      class="rb-range"
-                      type="range"
-                      min="0"
-                      max="18"
-                      step="1"
-                      value="6"
-                    />
+                    <input id="rbStartTimeline" class="rb-range" type="range" min="0" max="18" step="1" value="6" />
                     <span class="rb-range-value-tag" id="rbStartTimelineTag">6 months</span>
                   </div>
                   <div class="rb-live-line" id="rbTimelineLiveLine">
-                    You&rsquo;re hoping to start
-                    <strong>within the next 6 months</strong>.
+                    You&rsquo;re hoping to start <strong>within the next 6 months</strong>.
                   </div>
-                  <div class="rb-field-helper">
-                    This isn&rsquo;t a loan application &mdash; it simply points us in the right direction.
-                  </div>
+                  <div class="rb-field-helper">This isn&rsquo;t a loan application &mdash; it simply points us in the right direction.</div>
                 </div>
               </div>
             </div>
@@ -1479,12 +1173,9 @@
           <!-- STEP 4 -->
           <section class="rb-step" data-step="4" aria-labelledby="rbStep4Title">
             <header class="rb-step-header">
-              <h2 class="rb-step-title" id="rbStep4Title">
-                Your financing snapshot
-              </h2>
+              <h2 class="rb-step-title" id="rbStep4Title">Your financing snapshot</h2>
               <p class="rb-step-subtitle">
-                We combine NHT, banks, and private partners &mdash; this helps us
-                match you with the best route.
+                We combine NHT, banks, and private partners &mdash; this helps us match you with the best route.
               </p>
             </header>
 
@@ -1492,40 +1183,23 @@
               <div class="rb-field" data-field="nhtContributor">
                 <label class="rb-field-label">Are you an NHT contributor?</label>
                 <div class="rb-pill-group" id="rbNhtContributorGroup">
-                  <label class="rb-pill-option">
-                    <input type="radio" name="rbNhtContributor" value="Yes" />
-                    Yes
-                  </label>
-                  <label class="rb-pill-option">
-                    <input type="radio" name="rbNhtContributor" value="No" />
-                    No
-                  </label>
-                  <label class="rb-pill-option">
-                    <input type="radio" name="rbNhtContributor" value="Not Sure" />
-                    Not sure
-                  </label>
+                  <label class="rb-pill-option"><input type="radio" name="rbNhtContributor" value="Yes" />Yes</label>
+                  <label class="rb-pill-option"><input type="radio" name="rbNhtContributor" value="No" />No</label>
+                  <label class="rb-pill-option"><input type="radio" name="rbNhtContributor" value="Not Sure" />Not sure</label>
                 </div>
-                <div
-                  class="rb-learn-toggle"
-                  data-learn-target="rbNhtLearn"
-                  role="button"
-                  tabindex="0"
-                >
+                <div class="rb-learn-toggle" data-learn-target="rbNhtLearn" role="button" tabindex="0">
                   <i class="fa-regular fa-circle-question"></i>
                   <span>Learn more about NHT contributions</span>
                 </div>
                 <div class="rb-learn-body" id="rbNhtLearn">
-                  If you work in Jamaica and pay NHT, you may have benefits
-                  available for repairs, building, or buying. We&rsquo;ll explore
-                  this with you &mdash; this is not a formal NHT application.
+                  If you work in Jamaica and pay NHT, you may have benefits available for repairs, building, or buying.
+                  We&rsquo;ll explore this with you &mdash; this is not a formal NHT application.
                 </div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="employmentType">
-                <label class="rb-field-label" for="rbEmploymentType">
-                  What best describes your income situation?
-                </label>
+                <label class="rb-field-label" for="rbEmploymentType">What best describes your income situation?</label>
                 <select id="rbEmploymentType" class="rb-select" aria-label="Employment type">
                   <option value="">Select one</option>
                 </select>
@@ -1533,9 +1207,7 @@
               </div>
 
               <div class="rb-field" data-field="nhtProduct">
-                <label class="rb-field-label" for="rbNhtProduct">
-                  Which NHT option sounds closest to what you need?
-                </label>
+                <label class="rb-field-label" for="rbNhtProduct">Which NHT option sounds closest to what you need?</label>
                 <select id="rbNhtProduct" class="rb-select" aria-label="NHT product">
                   <option value="">Select one</option>
                 </select>
@@ -1543,9 +1215,7 @@
               </div>
 
               <div class="rb-field" data-field="otherFinancing">
-                <label class="rb-field-label" for="rbOtherFinancing">
-                  Any other route you&rsquo;re considering?
-                </label>
+                <label class="rb-field-label" for="rbOtherFinancing">Any other route you&rsquo;re considering?</label>
                 <select id="rbOtherFinancing" class="rb-select" aria-label="Other financing">
                   <option value="">Select one</option>
                 </select>
@@ -1553,54 +1223,33 @@
               </div>
 
               <div class="rb-field" data-field="incomeRange">
-                <label class="rb-field-label" for="rbIncomeRange">
-                  Rough net monthly income range
-                </label>
+                <label class="rb-field-label" for="rbIncomeRange">Rough net monthly income range</label>
                 <select id="rbIncomeRange" class="rb-select" aria-label="Income range">
                   <option value="">Select one</option>
                 </select>
-                <div class="rb-field-helper">
-                  A range is fine &mdash; we don&rsquo;t need exact figures.
-                </div>
+                <div class="rb-field-helper">A range is fine &mdash; we don&rsquo;t need exact figures.</div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="overseasSponsor">
-                <label class="rb-field-label">
-                  Do you have family or a sponsor overseas helping with the project?
-                </label>
+                <label class="rb-field-label">Do you have family or a sponsor overseas helping with the project?</label>
                 <div class="rb-pill-group" id="rbOverseasSponsorGroup">
-                  <label class="rb-pill-option">
-                    <input type="radio" name="rbOverseasSponsor" value="Yes" />
-                    Yes
-                  </label>
-                  <label class="rb-pill-option">
-                    <input type="radio" name="rbOverseasSponsor" value="No" />
-                    No
-                  </label>
+                  <label class="rb-pill-option"><input type="radio" name="rbOverseasSponsor" value="Yes" />Yes</label>
+                  <label class="rb-pill-option"><input type="radio" name="rbOverseasSponsor" value="No" />No</label>
                 </div>
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
 
               <div class="rb-field" data-field="sponsorCountry" style="grid-column:1/-1;">
-                <label class="rb-field-label" for="rbSponsorCountry">
-                  If yes, which country are they based in?
-                </label>
-                <input
-                  id="rbSponsorCountry"
-                  class="rb-input"
-                  type="text"
-                  placeholder="E.g. USA, UK, Canada"
-                />
+                <label class="rb-field-label" for="rbSponsorCountry">If yes, which country are they based in?</label>
+                <input id="rbSponsorCountry" class="rb-input" type="text" placeholder="E.g. USA, UK, Canada" />
                 <div class="rb-field-error" aria-live="polite"></div>
               </div>
             </div>
 
             <div class="rb-field" style="margin-top:8px;">
               <div class="rb-field-helper">
-                Your answers stay private with Strativa. We use them only to
-                advise you on possible options &mdash; final decisions always rest
-                with NHT and the lenders.
+                Your answers stay private with Strativa. We use them only to advise you on possible options &mdash; final decisions always rest with NHT and the lenders.
               </div>
             </div>
           </section>
@@ -1608,13 +1257,8 @@
           <!-- STEP 5 -->
           <section class="rb-step" data-step="5" aria-labelledby="rbStep5Title">
             <header class="rb-step-header">
-              <h2 class="rb-step-title" id="rbStep5Title">
-                Here&rsquo;s your pre-qual snapshot
-              </h2>
-              <p class="rb-step-subtitle">
-                These are early indicators based on what you shared. Final
-                approval and terms always come from NHT and the lenders.
-              </p>
+              <h2 class="rb-step-title" id="rbStep5Title">Here&rsquo;s your pre-qual snapshot</h2>
+              <p class="rb-step-subtitle">These are early indicators based on what you shared. Final approval and terms always come from NHT and the lenders.</p>
             </header>
 
             <article class="rb-summary-card" id="rbSummaryCard">
@@ -1625,31 +1269,21 @@
                 </div>
                 <div class="rb-readiness-chip" id="rbReadinessChip">
                   <span id="rbReadinessEmoji">🟡</span>
-                  <span id="rbReadinessText">
-                    Readiness: Good &mdash; on track.
-                  </span>
+                  <span id="rbReadinessText">Readiness: Good &mdash; on track.</span>
                 </div>
               </div>
               <div class="rb-summary-body">
                 <div class="rb-summary-line" id="rbSummaryProjectLine">
-                  You&rsquo;re looking at a
-                  <span class="rb-summary-highlight" id="rbSummaryRebuildType">
-                    rebuild project
-                  </span>
+                  You&rsquo;re looking at a <span class="rb-summary-highlight" id="rbSummaryRebuildType">rebuild project</span>
                   in <span id="rbSummaryParish">your parish</span>.
                 </div>
                 <div class="rb-summary-line" id="rbSummaryBudgetLine">
-                  Your rough project budget is around
-                  <span class="rb-summary-highlight" id="rbSummaryBudgetRange">J$0</span>
-                  and you&rsquo;d like payments around
-                  <span class="rb-summary-highlight" id="rbSummaryPayment">J$0</span>
-                  per month.
+                  Your rough project budget is around <span class="rb-summary-highlight" id="rbSummaryBudgetRange">J$0</span>
+                  and you&rsquo;d like payments around <span class="rb-summary-highlight" id="rbSummaryPayment">J$0</span> per month.
                 </div>
                 <div class="rb-summary-line" id="rbSummaryTimelineLine">
-                  You&rsquo;re hoping to start
-                  <span class="rb-summary-highlight" id="rbSummaryTimeline">soon</span>.
+                  You&rsquo;re hoping to start <span class="rb-summary-highlight" id="rbSummaryTimeline">soon</span>.
                 </div>
-
                 <div class="rb-summary-line" id="rbSummaryEstimateLine">
                   Projects like yours often fall in the range of approximately
                   <span class="rb-summary-highlight" id="rbSummaryEstimateRange">J$0 &ndash; J$0</span>,
@@ -1657,161 +1291,656 @@
                 </div>
 
                 <p class="rb-summary-disclaimer">
-                  This is an illustrative estimate only. Final approval, terms,
-                  and amounts are set by NHT and/or participating lenders.
+                  This is an illustrative estimate only. Final approval, terms, and amounts are set by NHT and/or participating lenders.
                 </p>
               </div>
             </article>
 
-            <!-- CTA BLOCK -->
+            <!-- CTA BLOCK (FIXED / CLEAN) -->
             <div class="rb-cta-block">
-              <div>
-                Would you like a Strativa Rebuild Advisor to review this and
-                contact you with next steps?
-              </div>
+              <div>Would you like a Strativa Rebuild Advisor to review this and contact you with next steps?</div>
 
               <div class="rb-radio-stack" data-field="willingVisit">
                 <label class="rb-radio-line">
-  <input type="radio" name="rbWillingVisit" value="Maybe Later" />
-  <span>Maybe later — just send me the results for now.</span>
-</label>
+                  <input type="radio" name="rbWillingVisit" value="Yes" />
+                  <span>Yes, I’d like a call or site visit.</span>
+                </label>
 
                 <label class="rb-radio-line">
-                  <input type="radio" name="rbWillingVisit" value="Maybe Later_cmp
-                    .withSuccessHandler((dims) => {
-                      const safe = rbNormalizeDims(dims) || RB_DIMENSIONS_STATIC;
-                      rbApplyDimensions(safe);
-                      rbHideLoadingOverlay();
-                    })
-                    .withFailureHandler((err) => {
-                      console.error("Dimensions load failed:", err);
-                      rbApplyDimensions(RB_DIMENSIONS_STATIC);
-                      rbHideLoadingOverlay();
-                    });
-                } else {
-                  rbApplyDimensions(RB_DIMENSIONS_STATIC);
-                  rbHideLoadingOverlay();
-                }
-              } catch (err) {
-                console.error("Dimensions load failed:", err);
-                rbApplyDimensions(RB_DIMENSIONS_STATIC);
-                rbHideLoadingOverlay();
-              }
-            }, 250);
-          }
+                  <input type="radio" name="rbWillingVisit" value="Maybe Later" />
+                  <span>Maybe later — just send me the results for now.</span>
+                </label>
+              </div>
 
-          function rbNormalizeDims(dims) {
-            if (!dims || typeof dims !== "object") return null;
-            return {
-              parishes: Array.isArray(dims.parishes) ? dims.parishes : [],
-              rebuildTypes: Array.isArray(dims.rebuildTypes) ? dims.rebuildTypes : [],
-              incomeRanges: Array.isArray(dims.incomeRanges) ? dims.incomeRanges : [],
-              employmentTypes: Array.isArray(dims.employmentTypes) ? dims.employmentTypes : [],
-              nhtProducts: Array.isArray(dims.nhtProducts) ? dims.nhtProducts : [],
-              otherFinancing: Array.isArray(dims.otherFinancing) ? dims.otherFinancing : [],
-              hearAboutUs: Array.isArray(dims.hearAboutUs) ? dims.hearAboutUs : [],
-            };
-          }
+              <div class="rb-field" data-field="visitWindow" style="margin-top:8px;">
+                <label class="rb-field-label" for="rbVisitWindow">Preferred contact / visit window (optional)</label>
+                <input id="rbVisitWindow" class="rb-input" type="text" placeholder="E.g. Weekdays after 5pm" />
+                <div class="rb-field-error" aria-live="polite"></div>
+              </div>
+            </div>
 
-          function rbApplyDimensions(dims) {
-            rbClearSelectKeepFirst("rbParish");
-            rbClearSelectKeepFirst("rbRebuildType");
-            rbClearSelectKeepFirst("rbIncomeRange");
-            rbClearSelectKeepFirst("rbEmploymentType");
-            rbClearSelectKeepFirst("rbNhtProduct");
-            rbClearSelectKeepFirst("rbOtherFinancing");
-            rbClearSelectKeepFirst("rbHearAboutUs");
+            <!-- SUCCESS -->
+            <div class="rb-success" id="rbSuccess">
+              <div class="rb-success-check"><i class="fa-solid fa-check"></i></div>
+              <div class="rb-success-title">You&rsquo;re all set!</div>
+              <div class="rb-success-copy">We received your details. A Strativa advisor will reach out soon.</div>
+              <div class="rb-success-meta" id="rbSuccessMeta"></div>
+              <div class="rb-success-actions">
+                <a class="rb-link-as-btn rb-btn rb-btn-primary" href="/" onclick="location.reload(); return false;">
+                  Submit another
+                </a>
+              </div>
+            </div>
+          </section>
 
-            rbPopulateSelect("rbParish", dims.parishes);
-            rbPopulateSelect("rbRebuildType", dims.rebuildTypes);
-            rbPopulateSelect("rbIncomeRange", dims.incomeRanges);
-            rbPopulateSelect("rbEmploymentType", dims.employmentTypes);
-            rbPopulateSelect("rbNhtProduct", dims.nhtProducts);
-            rbPopulateSelect("rbOtherFinancing", dims.otherFinancing);
-            rbPopulateSelect("rbHearAboutUs", dims.hearAboutUs);
-          }
+          <!-- Global error -->
+          <div class="rb-global-error" id="rbGlobalError" role="alert"></div>
 
-          function rbClearSelectKeepFirst(id) {
-            const select = document.getElementById(id);
-            if (!select) return;
-            while (select.options.length > 1) select.remove(1);
-          }
+          <!-- NAV -->
+          <div class="rb-nav-row">
+            <div class="rb-nav-buttons">
+              <button class="rb-btn rb-btn-ghost" id="rbBackBtn" type="button">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </button>
 
-          function rbPopulateSelect(id, values) {
-            const select = document.getElementById(id);
-            if (!select || !Array.isArray(values)) return;
-            values
-              .filter((v) => v && String(v).trim() !== "")
-              .forEach((value) => {
-                const option = document.createElement("option");
-                option.value = value;
-                option.textContent = value;
-                select.appendChild(option);
-              });
-          }
+              <button class="rb-btn rb-btn-primary" id="rbNextBtn" type="button">
+                <span id="rbNextBtnLabel">Next</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div class="rb-nav-footnote" id="rbNavFootnote">Step <span id="rbStepNum">1</span> of 5</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          function rbShowLoadingOverlay() {
-            const overlay = document.getElementById("rbLoadingOverlay");
-            if (overlay) overlay.style.display = "flex";
-          }
+    <script>
+      // -----------------------------
+      // Static dropdown options (no Apps Script)
+      // -----------------------------
+      const RB_DIMENSIONS_STATIC = {
+        parishes: [
+          "Kingston",
+          "St. Andrew",
+          "St. Catherine",
+          "Clarendon",
+          "Manchester",
+          "St. Elizabeth",
+          "Westmoreland",
+          "Hanover",
+          "St. James",
+          "Trelawny",
+          "St. Ann",
+          "St. Mary",
+          "Portland",
+          "St. Thomas",
+        ],
+        rebuildTypes: ["Repair", "Extension", "Brand new build", "Finish existing shell"],
+        incomeRanges: [
+          "Under J$100,000",
+          "J$100,000 – J$199,999",
+          "J$200,000 – J$299,999",
+          "J$300,000 – J$499,999",
+          "J$500,000+",
+        ],
+        employmentTypes: ["Employed", "Self-employed", "Contract / Gig", "Overseas income", "Other"],
+        nhtProducts: ["Home Improvement", "Build on Own Land", "Mortgage (Purchase)", "Not sure"],
+        otherFinancing: ["Bank", "Credit Union", "Private lender", "Family / Sponsor", "Not sure"],
+        hearAboutUs: ["Instagram", "Facebook", "Google Search", "Friend / Referral", "WhatsApp", "Other"],
+      };
 
-          function rbHideLoadingOverlay() {
-            const overlay = document.getElementById("rbLoadingOverlay");
-            if (overlay) overlay.style.display = "none";
-          }
+      // -----------------------------
+      // State
+      // -----------------------------
+      const rbState = {
+        step: 1,
+        maxStep: 5,
+        isSaving: false,
+      };
 
-          // (the rest of your script continues unchanged...)
+      // -----------------------------
+      // Helpers
+      // -----------------------------
+      function rb$(id) {
+        return document.getElementById(id);
+      }
 
-          function rbSubmitLead() {
-            if (rbState.isSaving) return;
+      function rbFormatJMD(n) {
+        const num = Number(n);
+        if (!Number.isFinite(num)) return "J$0";
+        return "J$" + num.toLocaleString("en-US");
+      }
 
-            let allValid = true;
-            for (let step = 1; step <= rbState.maxStep; step++) {
-              if (!rbValidateStep(step)) {
-                if (allValid) rbGoToStep(step);
-                allValid = false;
-              }
+      function rbShowGlobalError(msg) {
+        const el = rb$("rbGlobalError");
+        if (!el) return;
+        if (!msg) {
+          el.classList.remove("is-visible");
+          el.textContent = "";
+          return;
+        }
+        el.textContent = msg;
+        el.classList.add("is-visible");
+      }
+
+      function rbShowLoadingOverlay() {
+        const overlay = rb$("rbLoadingOverlay");
+        if (overlay) overlay.style.display = "flex";
+      }
+
+      function rbHideLoadingOverlay() {
+        const overlay = rb$("rbLoadingOverlay");
+        if (overlay) overlay.style.display = "none";
+      }
+
+      function rbClearFieldError(fieldWrap) {
+        if (!fieldWrap) return;
+        fieldWrap.classList.remove("rb-field-invalid");
+        const err = fieldWrap.querySelector(".rb-field-error");
+        if (err) err.textContent = "";
+      }
+
+      function rbSetFieldError(fieldWrap, msg) {
+        if (!fieldWrap) return;
+        fieldWrap.classList.add("rb-field-invalid");
+        const err = fieldWrap.querySelector(".rb-field-error");
+        if (err) err.textContent = msg || "This field is required.";
+      }
+
+      function rbGetRadioValue(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : "";
+      }
+
+      function rbPopulateSelect(id, values) {
+        const select = rb$(id);
+        if (!select || !Array.isArray(values)) return;
+        // keep first option
+        while (select.options.length > 1) select.remove(1);
+        values.forEach((v) => {
+          const opt = document.createElement("option");
+          opt.value = v;
+          opt.textContent = v;
+          select.appendChild(opt);
+        });
+      }
+
+      // Make pill groups show selected state
+      function rbWirePillGroup(groupId, inputName) {
+        const group = rb$(groupId);
+        if (!group) return;
+        group.addEventListener("click", (e) => {
+          const label = e.target.closest("label.rb-pill-option");
+          if (!label) return;
+          const input = label.querySelector('input[type="radio"]');
+          if (!input) return;
+          input.checked = true;
+          rbRefreshPills(groupId, inputName);
+        });
+      }
+
+      function rbRefreshPills(groupId, inputName) {
+        const group = rb$(groupId);
+        if (!group) return;
+        const selected = rbGetRadioValue(inputName);
+        group.querySelectorAll("label.rb-pill-option").forEach((lab) => {
+          const inp = lab.querySelector('input[type="radio"]');
+          if (!inp) return;
+          lab.classList.toggle("is-selected", inp.value === selected);
+        });
+      }
+
+      // Learn toggles
+      function rbWireLearnToggles() {
+        document.querySelectorAll(".rb-learn-toggle").forEach((t) => {
+          const targetId = t.getAttribute("data-learn-target");
+          const target = targetId ? rb$(targetId) : null;
+          if (!target) return;
+
+          const toggle = () => target.classList.toggle("is-open");
+
+          t.addEventListener("click", toggle);
+          t.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggle();
             }
-            if (!allValid) {
-              rbShowGlobalError("A few details need your attention. We’ve highlighted them above.");
+          });
+        });
+      }
+
+      // -----------------------------
+      // Step / Progress UI
+      // -----------------------------
+      function rbGoToStep(step) {
+        rbState.step = Math.min(rbState.maxStep, Math.max(1, step));
+
+        // show section
+        document.querySelectorAll(".rb-step").forEach((s) => {
+          const sNum = Number(s.getAttribute("data-step"));
+          s.classList.toggle("is-active", sNum === rbState.step);
+        });
+
+        // progress dots
+        document.querySelectorAll(".rb-step-dot").forEach((d) => {
+          const n = Number(d.getAttribute("data-step-dot"));
+          d.classList.toggle("is-active", n === rbState.step);
+          d.classList.toggle("is-complete", n < rbState.step);
+        });
+
+        // line fill
+        const fill = rb$("rbProgressFill");
+        if (fill) {
+          const pct = ((rbState.step - 1) / (rbState.maxStep - 1)) * 100;
+          fill.style.width = `${pct}%`;
+        }
+
+        // nav buttons + label
+        const backBtn = rb$("rbBackBtn");
+        const nextBtnLabel = rb$("rbNextBtnLabel");
+        const stepNumEl = rb$("rbStepNum");
+        if (stepNumEl) stepNumEl.textContent = String(rbState.step);
+        if (backBtn) backBtn.style.display = rbState.step === 1 ? "none" : "inline-flex";
+
+        if (nextBtnLabel) {
+          nextBtnLabel.textContent = rbState.step === rbState.maxStep ? "Send My Details to Strativa" : "Next";
+        }
+
+        // update summary when entering step 5
+        if (rbState.step === 5) rbUpdateSummary();
+
+        rbShowGlobalError("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // -----------------------------
+      // Range sliders wiring
+      // -----------------------------
+      function rbWireRanges() {
+        const hurricane = rb$("rbHurricaneImpact");
+        const hurricaneVal = rb$("rbHurricaneImpactValue");
+        const hurricaneLbl = rb$("rbHurricaneImpactLabel");
+        const hurricaneLabels = {
+          1: "Very minor",
+          2: "Light damage",
+          3: "Moderate damage",
+          4: "Heavy damage",
+          5: "Severe / urgent",
+        };
+
+        if (hurricane) {
+          const sync = () => {
+            const v = Number(hurricane.value);
+            if (hurricaneVal) hurricaneVal.textContent = String(v);
+            if (hurricaneLbl) hurricaneLbl.textContent = hurricaneLabels[v] || "Moderate damage";
+          };
+          hurricane.addEventListener("input", sync);
+          sync();
+        }
+
+        const priority = rb$("rbProjectPriority");
+        const priorityVal = rb$("rbProjectPriorityValue");
+        const priorityLbl = rb$("rbProjectPriorityLabel");
+        const priorityLabels = {
+          1: "Not urgent",
+          2: "Low urgency",
+          3: "Important but flexible",
+          4: "Very urgent",
+          5: "Emergency",
+        };
+
+        if (priority) {
+          const sync = () => {
+            const v = Number(priority.value);
+            if (priorityVal) priorityVal.textContent = String(v);
+            if (priorityLbl) priorityLbl.textContent = priorityLabels[v] || "Important but flexible";
+          };
+          priority.addEventListener("input", sync);
+          sync();
+        }
+
+        const budgetRange = rb$("rbEstimatedBudgetRange");
+        const budgetTag = rb$("rbEstimatedBudgetTag");
+        const budgetInput = rb$("rbEstimatedBudgetInput");
+        const budgetLive = rb$("rbBudgetLiveLine");
+
+        if (budgetRange && budgetInput) {
+          const syncFromRange = () => {
+            const v = Number(budgetRange.value);
+            budgetInput.value = String(v);
+            if (budgetTag) budgetTag.textContent = rbFormatJMD(v);
+            if (budgetLive) budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(v)}</strong> total.`;
+          };
+          const syncFromInput = () => {
+            const v = Number(budgetInput.value || 0);
+            const clamped = Math.min(Number(budgetRange.max), Math.max(Number(budgetRange.min), v));
+            budgetRange.value = String(clamped);
+            if (budgetTag) budgetTag.textContent = rbFormatJMD(clamped);
+            if (budgetLive) budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(clamped)}</strong> total.`;
+          };
+          budgetRange.addEventListener("input", syncFromRange);
+          budgetInput.addEventListener("input", syncFromInput);
+          syncFromRange();
+        }
+
+        const payRange = rb$("rbMonthlyPaymentRange");
+        const payTag = rb$("rbMonthlyPaymentTag");
+        const payInput = rb$("rbMonthlyPaymentInput");
+        const payLive = rb$("rbPaymentLiveLine");
+
+        if (payRange && payInput) {
+          const syncFromRange = () => {
+            const v = Number(payRange.value);
+            payInput.value = String(v);
+            if (payTag) payTag.textContent = rbFormatJMD(v);
+            if (payLive) payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(v)}</strong>.`;
+          };
+          const syncFromInput = () => {
+            const v = Number(payInput.value || 0);
+            const clamped = Math.min(Number(payRange.max), Math.max(Number(payRange.min), v));
+            payRange.value = String(clamped);
+            if (payTag) payTag.textContent = rbFormatJMD(clamped);
+            if (payLive) payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(clamped)}</strong>.`;
+          };
+          payRange.addEventListener("input", syncFromRange);
+          payInput.addEventListener("input", syncFromInput);
+          syncFromRange();
+        }
+
+        const tl = rb$("rbStartTimeline");
+        const tlTag = rb$("rbStartTimelineTag");
+        const tlLive = rb$("rbTimelineLiveLine");
+        if (tl) {
+          const sync = () => {
+            const v = Number(tl.value);
+            const label = v === 0 ? "ASAP" : `${v} months`;
+            if (tlTag) tlTag.textContent = label;
+            if (tlLive) tlLive.innerHTML = `You&rsquo;re hoping to start <strong>${v === 0 ? "ASAP" : "within the next " + v + " months"}</strong>.`;
+          };
+          tl.addEventListener("input", sync);
+          sync();
+        }
+      }
+
+      // -----------------------------
+      // Validation
+      // -----------------------------
+      function rbValidateStep(step) {
+        let ok = true;
+
+        // clear errors in active step only
+        const section = document.querySelector(`.rb-step[data-step="${step}"]`);
+        if (!section) return true;
+        section.querySelectorAll(".rb-field").forEach(rbClearFieldError);
+
+        const requireText = (id, msg) => {
+          const wrap = section.querySelector(`.rb-field [id="${id}"]`)?.closest(".rb-field");
+          const el = rb$(id);
+          if (!el) return true;
+          const val = String(el.value || "").trim();
+          if (!val) {
+            rbSetFieldError(wrap, msg);
+            ok = false;
+            return false;
+          }
+          return true;
+        };
+
+        const requireSelect = requireText;
+
+        const requireRadio = (name, msg) => {
+          const val = rbGetRadioValue(name);
+          const wrap = section.querySelector(`[data-field] input[name="${name}"]`)?.closest(".rb-field") || null;
+          if (!val) {
+            // for pill groups, the rb-field is the parent of the group area
+            const fieldWrap =
+              section.querySelector(`[data-field] input[name="${name}"]`)?.closest("[data-field]") || wrap;
+            rbSetFieldError(fieldWrap, msg);
+            ok = false;
+            return false;
+          }
+          return true;
+        };
+
+        if (step === 1) {
+          requireText("rbFullName", "Full name is required.");
+          requireText("rbPrimaryPhone", "Phone is required.");
+          requireSelect("rbPreferredChannel", "Preferred channel is required.");
+        }
+
+        if (step === 2) {
+          requireSelect("rbParish", "Parish is required.");
+          requireSelect("rbRebuildType", "Please choose a rebuild type.");
+        }
+
+        if (step === 3) {
+          // Keep these required on the UI
+          requireText("rbEstimatedBudgetInput", "Estimated budget is required.");
+          requireText("rbMonthlyPaymentInput", "Monthly payment is required.");
+        }
+
+        // Step 4 optional overall (no required), but sponsorCountry only if sponsor is Yes
+        if (step === 4) {
+          const sponsor = rbGetRadioValue("rbOverseasSponsor");
+          if (sponsor === "Yes") {
+            const v = String(rb$("rbSponsorCountry")?.value || "").trim();
+            const wrap = rb$("rbSponsorCountry")?.closest(".rb-field");
+            if (!v) {
+              rbSetFieldError(wrap, "Please add the sponsor country (or choose No).");
+              ok = false;
+            }
+          }
+        }
+
+        return ok;
+      }
+
+      // -----------------------------
+      // Collect data
+      // -----------------------------
+      function rbCollectData() {
+        const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
+        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
+
+        return {
+          // Step 1
+          fullName: String(rb$("rbFullName")?.value || "").trim(),
+          primaryPhone: String(rb$("rbPrimaryPhone")?.value || "").trim(),
+          email: String(rb$("rbEmail")?.value || "").trim(),
+          preferredChannel: String(rb$("rbPreferredChannel")?.value || "").trim(),
+          hearAboutUs: String(rb$("rbHearAboutUs")?.value || "").trim(),
+
+          // Step 2
+          parish: String(rb$("rbParish")?.value || "").trim(),
+          community: String(rb$("rbCommunity")?.value || "").trim(),
+          propertyStatus: rbGetRadioValue("rbPropertyStatus"),
+          rebuildType: String(rb$("rbRebuildType")?.value || "").trim(),
+          hurricaneImpactLevel: Number(rb$("rbHurricaneImpact")?.value || 0),
+          projectPriority: Number(rb$("rbProjectPriority")?.value || 0),
+
+          // Step 3
+          estimatedBudget: budget,
+          monthlyPayment: payment,
+          startTimelineMonths: Number(rb$("rbStartTimeline")?.value || 0),
+
+          // Step 4
+          nhtContributor: rbGetRadioValue("rbNhtContributor"),
+          employmentType: String(rb$("rbEmploymentType")?.value || "").trim(),
+          nhtProduct: String(rb$("rbNhtProduct")?.value || "").trim(),
+          otherFinancing: String(rb$("rbOtherFinancing")?.value || "").trim(),
+          incomeRange: String(rb$("rbIncomeRange")?.value || "").trim(),
+          overseasSponsor: rbGetRadioValue("rbOverseasSponsor"),
+          sponsorCountry: String(rb$("rbSponsorCountry")?.value || "").trim(),
+
+          // Step 5
+          willingVisit: rbGetRadioValue("rbWillingVisit"),
+          visitWindow: String(rb$("rbVisitWindow")?.value || "").trim(),
+        };
+      }
+
+      // -----------------------------
+      // Summary
+      // -----------------------------
+      function rbUpdateSummary() {
+        const name = String(rb$("rbFullName")?.value || "").trim();
+        const rebuildType = String(rb$("rbRebuildType")?.value || "rebuild project").trim();
+        const parish = String(rb$("rbParish")?.value || "your parish").trim();
+
+        const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
+        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
+        const tl = Number(rb$("rbStartTimeline")?.value || 0);
+
+        const greeting = rb$("rbSummaryGreeting");
+        if (greeting) greeting.textContent = name ? `Hi ${name.split(" ")[0]},` : "Hi there,";
+
+        const rt = rb$("rbSummaryRebuildType");
+        const sp = rb$("rbSummaryParish");
+        if (rt) rt.textContent = rebuildType || "rebuild project";
+        if (sp) sp.textContent = parish || "your parish";
+
+        const br = rb$("rbSummaryBudgetRange");
+        const mp = rb$("rbSummaryPayment");
+        if (br) br.textContent = rbFormatJMD(budget);
+        if (mp) mp.textContent = rbFormatJMD(payment);
+
+        const tlEl = rb$("rbSummaryTimeline");
+        if (tlEl) tlEl.textContent = tl === 0 ? "ASAP" : `within ${tl} months`;
+
+        // very simple illustrative estimate range
+        const low = Math.round(budget * 0.85);
+        const high = Math.round(budget * 1.15);
+        const est = rb$("rbSummaryEstimateRange");
+        if (est) est.textContent = `${rbFormatJMD(low)} – ${rbFormatJMD(high)}`;
+      }
+
+      // -----------------------------
+      // Submit
+      // -----------------------------
+      async function rbSubmitLead() {
+        if (rbState.isSaving) return;
+
+        // Validate all steps
+        for (let s = 1; s <= rbState.maxStep; s++) {
+          const ok = rbValidateStep(s);
+          if (!ok) {
+            rbGoToStep(s);
+            rbShowGlobalError("A few details need your attention. We’ve highlighted them above.");
+            return;
+          }
+        }
+
+        const data = rbCollectData();
+        rbState.isSaving = true;
+
+        const nextBtn = rb$("rbNextBtn");
+        const nextLabel = rb$("rbNextBtnLabel");
+        if (nextBtn) nextBtn.disabled = true;
+        if (nextLabel) nextLabel.textContent = "Sending…";
+
+        rbShowGlobalError("");
+        rbShowLoadingOverlay();
+
+        try {
+          const res = await fetch("/api/rb/lead", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          const json = await res.json().catch(() => ({}));
+          if (!res.ok || !json || !json.success) {
+            throw new Error((json && json.error) || `Submission failed (${res.status})`);
+          }
+
+          // Show success UI inside step 5
+          const success = rb$("rbSuccess");
+          if (success) success.style.display = "block";
+
+          // Hide the summary/cta once success shows (optional, but cleaner)
+          rb$("rbSummaryCard")?.setAttribute("style", "display:none;");
+          document.querySelector(".rb-cta-block")?.setAttribute("style", "display:none;");
+
+          const meta = rb$("rbSuccessMeta");
+          if (meta) meta.textContent = json.leadId ? `Reference: ${json.leadId}` : "";
+
+          // Hide nav on success
+          rb$("rbBackBtn")?.setAttribute("disabled", "true");
+          rb$("rbNextBtn")?.setAttribute("disabled", "true");
+
+          rbHideLoadingOverlay();
+          rbState.isSaving = false;
+          return;
+        } catch (err) {
+          console.error(err);
+          rbHideLoadingOverlay();
+          rbState.isSaving = false;
+          rbShowGlobalError("We couldn’t save your details right now. Please try again or contact us directly.");
+          if (nextBtn) nextBtn.disabled = false;
+          if (nextLabel) nextLabel.textContent = "Send My Details to Strativa";
+        }
+      }
+
+      // -----------------------------
+      // Init
+      // -----------------------------
+      function rbInit() {
+        // populate selects
+        rbPopulateSelect("rbParish", RB_DIMENSIONS_STATIC.parishes);
+        rbPopulateSelect("rbRebuildType", RB_DIMENSIONS_STATIC.rebuildTypes);
+        rbPopulateSelect("rbIncomeRange", RB_DIMENSIONS_STATIC.incomeRanges);
+        rbPopulateSelect("rbEmploymentType", RB_DIMENSIONS_STATIC.employmentTypes);
+        rbPopulateSelect("rbNhtProduct", RB_DIMENSIONS_STATIC.nhtProducts);
+        rbPopulateSelect("rbOtherFinancing", RB_DIMENSIONS_STATIC.otherFinancing);
+        rbPopulateSelect("rbHearAboutUs", RB_DIMENSIONS_STATIC.hearAboutUs);
+
+        // pills
+        rbWirePillGroup("rbPropertyStatusGroup", "rbPropertyStatus");
+        rbWirePillGroup("rbNhtContributorGroup", "rbNhtContributor");
+        rbWirePillGroup("rbOverseasSponsorGroup", "rbOverseasSponsor");
+
+        // refresh pills on change too
+        document.addEventListener("change", (e) => {
+          if (e.target && e.target.name === "rbPropertyStatus") rbRefreshPills("rbPropertyStatusGroup", "rbPropertyStatus");
+          if (e.target && e.target.name === "rbNhtContributor") rbRefreshPills("rbNhtContributorGroup", "rbNhtContributor");
+          if (e.target && e.target.name === "rbOverseasSponsor") rbRefreshPills("rbOverseasSponsorGroup", "rbOverseasSponsor");
+        });
+
+        rbWireLearnToggles();
+        rbWireRanges();
+
+        // nav
+        const backBtn = rb$("rbBackBtn");
+        const nextBtn = rb$("rbNextBtn");
+
+        if (backBtn) backBtn.addEventListener("click", () => rbGoToStep(rbState.step - 1));
+        if (nextBtn)
+          nextBtn.addEventListener("click", () => {
+            if (rbState.step < rbState.maxStep) {
+              const ok = rbValidateStep(rbState.step);
+              if (!ok) {
+                rbShowGlobalError("A few details need your attention. We’ve highlighted them above.");
+                return;
+              }
+              rbGoToStep(rbState.step + 1);
               return;
             }
+            // last step => submit
+            rbSubmitLead();
+          });
 
-            const data = rbCollectData();
-            rbState.isSaving = true;
+        // clicking dots (optional)
+        document.querySelectorAll(".rb-step-dot").forEach((d) => {
+          d.addEventListener("click", () => {
+            const step = Number(d.getAttribute("data-step-dot"));
+            // allow going back freely; going forward only if current step valid
+            if (step <= rbState.step) rbGoToStep(step);
+          });
+        });
 
-            const nextBtn = document.getElementById("rbNextBtn");
-            const nextLabel = document.getElementById("rbNextBtnLabel");
-            if (nextBtn) nextBtn.disabled = true;
-            if (nextLabel) nextLabel.textContent = "Sending…";
+        rbGoToStep(1);
+      }
 
-            rbShowGlobalError("");
-
-            fetch("/api/rb/lead", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            })
-              .then(async (res) => {
-                const json = await res.json().catch(() => ({}));
-                if (!res.ok || !json || !json.success) {
-                  throw new Error((json && json.error) || "Submission failed");
-                }
-                rbState.isSaving = false;
-                rbShowSuccess(json);
-              })
-              .catch((err) => {
-                console.error(err);
-                rbState.isSaving = false;
-                rbShowGlobalError(
-                  "We couldn’t save your details right now. Please try again or contact us directly."
-                );
-                if (nextBtn) nextBtn.disabled = false;
-                if (nextLabel) nextLabel.textContent = "Send My Details to Strativa";
-              });
-          }
-
-          document.addEventListener("DOMContentLoaded", rbInit);
-        </script>
-      </body>
-    </html>
+      document.addEventListener("DOMContentLoaded", rbInit);
+    </script>
+  </body>
+</html>
