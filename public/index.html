@@ -5,14 +5,6 @@
     <title>Rebuild Credit Pre-Qualification</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- OPTIONAL:
-      If you ever host this HTML on a DIFFERENT domain than your Cloud Run service,
-      set this meta to your Cloud Run base URL (no trailing slash), e.g.
-      <meta name="rb-api-base" content="https://strativabuild-93590416030.us-central1.run.app" />
-      If not set, it defaults to same-origin (works when served by Cloud Run).
-    -->
-    <meta name="rb-api-base" content="" />
-
     <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
@@ -319,6 +311,32 @@
       .rb-step.is-active {
         display: block;
       }
+      .rb-step-enter {
+        animation-name: rb-step-enter;
+      }
+      .rb-step-exit {
+        animation-name: rb-step-exit;
+      }
+      @keyframes rb-step-enter {
+        from {
+          opacity: 0;
+          transform: translateX(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes rb-step-exit {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(-18px);
+        }
+      }
 
       .rb-step-header {
         margin-bottom: 14px;
@@ -381,6 +399,10 @@
           box-shadow var(--rb-transition), background var(--rb-transition),
           transform var(--rb-transition);
         min-height: 38px;
+      }
+      .rb-textarea {
+        resize: vertical;
+        min-height: 70px;
       }
       .rb-input:focus-visible,
       .rb-select:focus-visible,
@@ -496,6 +518,11 @@
         cursor: pointer;
         transition: transform var(--rb-transition), box-shadow var(--rb-transition);
       }
+      .rb-range::-webkit-slider-thumb:active,
+      .rb-range::-moz-range-thumb:active {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 5px rgba(20, 184, 166, 0.45);
+      }
       .rb-range-value-tag {
         font-size: 11px;
         padding: 2px 8px;
@@ -581,6 +608,9 @@
           background var(--rb-transition), color var(--rb-transition),
           opacity var(--rb-transition);
       }
+      .rb-btn:focus-visible {
+        box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px rgba(20, 184, 166, 0.7);
+      }
       .rb-btn-primary {
         background: linear-gradient(
           135deg,
@@ -594,6 +624,18 @@
         color: #0f172a;
         border: 1px solid rgba(148, 163, 184, 0.7);
         box-shadow: none;
+      }
+      .rb-btn-primary:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.5),
+          0 0 32px rgba(20, 184, 166, 0.45);
+      }
+      .rb-btn-ghost:hover {
+        background: rgba(148, 163, 184, 0.1);
+      }
+      .rb-btn:active {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.4);
       }
       .rb-btn[disabled] {
         opacity: 0.6;
@@ -738,6 +780,27 @@
       .rb-success-check i {
         color: #16a34a;
         font-size: 26px;
+        opacity: 0;
+        transform: scale(0.7);
+        animation: rb-check-pop 0.35s ease-out 0.55s forwards;
+      }
+      @keyframes rb-check-pop {
+        0% {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .rb-success-actions {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+      }
+      .rb-link-as-btn {
+        text-decoration: none;
       }
 
       .rb-global-error {
@@ -779,6 +842,59 @@
       @keyframes rb-spin {
         to {
           transform: rotate(360deg);
+        }
+      }
+
+      /* Mobile refinements */
+      @media (max-width: 640px) {
+        body {
+          align-items: flex-start;
+          padding: 12px 10px 24px;
+        }
+        .rb-card {
+          padding: 20px 16px 18px;
+          border-radius: 18px;
+        }
+        .rb-step-title {
+          font-size: 18px;
+        }
+        .rb-step-subtitle {
+          font-size: 12px;
+        }
+        .rb-progress-labels span {
+          font-size: 10px;
+        }
+        .rb-grid {
+          gap: 12px 14px;
+        }
+        .rb-nav-row {
+          gap: 12px;
+        }
+        .rb-nav-buttons {
+          flex-direction: column-reverse;
+          width: 100%;
+        }
+        .rb-btn {
+          width: 100%;
+        }
+        .rb-summary-card {
+          padding: 12px 10px;
+        }
+        .rb-cta-block {
+          padding: 10px;
+        }
+      }
+
+      /* Accessibility: reduce motion */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+        .rb-orb {
+          display: none;
         }
       }
     </style>
@@ -1180,6 +1296,7 @@
               </div>
             </article>
 
+            <!-- CTA BLOCK (FIXED / CLEAN) -->
             <div class="rb-cta-block">
               <div>Would you like a Strativa Rebuild Advisor to review this and contact you with next steps?</div>
 
@@ -1202,21 +1319,45 @@
               </div>
             </div>
 
+            <!-- SUCCESS (UPDATED WITH BOOKING CTA + REDIRECT NOTE) -->
             <div class="rb-success" id="rbSuccess">
               <div class="rb-success-check"><i class="fa-solid fa-check"></i></div>
-              <div class="rb-success-title">You&rsquo;re all set!</div>
-              <div class="rb-success-copy">We received your details. A Strativa advisor will reach out soon.</div>
+              <div class="rb-success-title">Submitted!</div>
+
+              <div class="rb-success-copy" style="margin-top:6px;">
+                Next step: <strong>book your quick rebuild review</strong> so we can confirm where you are now and map the fastest path forward.
+              </div>
+
+              <div class="rb-success-copy" style="margin-top:10px;">
+                <strong>Limited applicant slots</strong> are reviewed first based on your project status and urgency.
+                Booking now helps you secure priority review.
+              </div>
+
               <div class="rb-success-meta" id="rbSuccessMeta"></div>
-              <div class="rb-success-actions">
-                <a class="rb-link-as-btn rb-btn rb-btn-primary" href="/" onclick="location.reload(); return false;">
+              <div class="rb-success-meta" id="rbRedirectNote" style="margin-top:10px;"></div>
+
+              <div class="rb-success-actions" style="gap:10px;flex-wrap:wrap;">
+                <a
+                  class="rb-link-as-btn rb-btn rb-btn-primary"
+                  id="rbBookNowBtn"
+                  href="#"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Book My Review Now <i class="fa-solid fa-calendar-check"></i>
+                </a>
+
+                <a class="rb-link-as-btn rb-btn rb-btn-ghost" href="/" onclick="location.reload(); return false;">
                   Submit another
                 </a>
               </div>
             </div>
           </section>
 
+          <!-- Global error -->
           <div class="rb-global-error" id="rbGlobalError" role="alert"></div>
 
+          <!-- NAV -->
           <div class="rb-nav-row">
             <div class="rb-nav-buttons">
               <button class="rb-btn rb-btn-ghost" id="rbBackBtn" type="button">
@@ -1235,13 +1376,31 @@
     </div>
 
     <script>
-      // ------------------------------------------------------------
-      // Static dropdown options (NO Apps Script)
-      // ------------------------------------------------------------
+      // -----------------------------
+      // Booking redirect config
+      // -----------------------------
+      const RB_BOOKING_URL = "https://app.lapsula.com/book/Strativasolution";
+      const RB_REDIRECT_DELAY_MS = 4500; // 4.5 seconds
+
+      // -----------------------------
+      // Static dropdown options (no Apps Script)
+      // -----------------------------
       const RB_DIMENSIONS_STATIC = {
         parishes: [
-          "Kingston","St. Andrew","St. Catherine","Clarendon","Manchester","St. Elizabeth",
-          "Westmoreland","Hanover","St. James","Trelawny","St. Ann","St. Mary","Portland","St. Thomas",
+          "Kingston",
+          "St. Andrew",
+          "St. Catherine",
+          "Clarendon",
+          "Manchester",
+          "St. Elizabeth",
+          "Westmoreland",
+          "Hanover",
+          "St. James",
+          "Trelawny",
+          "St. Ann",
+          "St. Mary",
+          "Portland",
+          "St. Thomas",
         ],
         rebuildTypes: ["Repair", "Extension", "Brand new build", "Finish existing shell"],
         incomeRanges: [
@@ -1257,26 +1416,22 @@
         hearAboutUs: ["Instagram", "Facebook", "Google Search", "Friend / Referral", "WhatsApp", "Other"],
       };
 
-      // ------------------------------------------------------------
-      // API base: same-origin by default; override via <meta name="rb-api-base">
-      // ------------------------------------------------------------
-      function rbGetApiBase() {
-        const meta = document.querySelector('meta[name="rb-api-base"]');
-        const v = (meta && meta.getAttribute("content")) ? meta.getAttribute("content").trim() : "";
-        if (v) return v.replace(/\/+$/, "");
-        return window.location.origin; // same host
-      }
-      const RB_API_BASE = rbGetApiBase();
-
-      // ------------------------------------------------------------
+      // -----------------------------
       // State
-      // ------------------------------------------------------------
-      const rbState = { step: 1, maxStep: 5, isSaving: false };
+      // -----------------------------
+      const rbState = {
+        step: 1,
+        maxStep: 5,
+        isSaving: false,
+      };
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Helpers
-      // ------------------------------------------------------------
-      function rb$(id) { return document.getElementById(id); }
+      // -----------------------------
+      function rb$(id) {
+        return document.getElementById(id);
+      }
+
       function rbFormatJMD(n) {
         const num = Number(n);
         if (!Number.isFinite(num)) return "J$0";
@@ -1295,8 +1450,15 @@
         el.classList.add("is-visible");
       }
 
-      function rbShowLoadingOverlay() { const o = rb$("rbLoadingOverlay"); if (o) o.style.display = "flex"; }
-      function rbHideLoadingOverlay() { const o = rb$("rbLoadingOverlay"); if (o) o.style.display = "none"; }
+      function rbShowLoadingOverlay() {
+        const overlay = rb$("rbLoadingOverlay");
+        if (overlay) overlay.style.display = "flex";
+      }
+
+      function rbHideLoadingOverlay() {
+        const overlay = rb$("rbLoadingOverlay");
+        if (overlay) overlay.style.display = "none";
+      }
 
       function rbClearFieldError(fieldWrap) {
         if (!fieldWrap) return;
@@ -1304,6 +1466,7 @@
         const err = fieldWrap.querySelector(".rb-field-error");
         if (err) err.textContent = "";
       }
+
       function rbSetFieldError(fieldWrap, msg) {
         if (!fieldWrap) return;
         fieldWrap.classList.add("rb-field-invalid");
@@ -1319,6 +1482,7 @@
       function rbPopulateSelect(id, values) {
         const select = rb$(id);
         if (!select || !Array.isArray(values)) return;
+        // keep first option
         while (select.options.length > 1) select.remove(1);
         values.forEach((v) => {
           const opt = document.createElement("option");
@@ -1328,6 +1492,7 @@
         });
       }
 
+      // Make pill groups show selected state
       function rbWirePillGroup(groupId, inputName) {
         const group = rb$(groupId);
         if (!group) return;
@@ -1352,87 +1517,120 @@
         });
       }
 
+      // Learn toggles
       function rbWireLearnToggles() {
         document.querySelectorAll(".rb-learn-toggle").forEach((t) => {
           const targetId = t.getAttribute("data-learn-target");
           const target = targetId ? rb$(targetId) : null;
           if (!target) return;
+
           const toggle = () => target.classList.toggle("is-open");
+
           t.addEventListener("click", toggle);
           t.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggle();
+            }
           });
         });
       }
 
-      // ------------------------------------------------------------
-      // Steps / Progress UI
-      // ------------------------------------------------------------
+      // -----------------------------
+      // Step / Progress UI
+      // -----------------------------
       function rbGoToStep(step) {
         rbState.step = Math.min(rbState.maxStep, Math.max(1, step));
+
+        // show section
         document.querySelectorAll(".rb-step").forEach((s) => {
           const sNum = Number(s.getAttribute("data-step"));
           s.classList.toggle("is-active", sNum === rbState.step);
         });
 
+        // progress dots
         document.querySelectorAll(".rb-step-dot").forEach((d) => {
           const n = Number(d.getAttribute("data-step-dot"));
           d.classList.toggle("is-active", n === rbState.step);
           d.classList.toggle("is-complete", n < rbState.step);
         });
 
+        // line fill
         const fill = rb$("rbProgressFill");
         if (fill) {
           const pct = ((rbState.step - 1) / (rbState.maxStep - 1)) * 100;
           fill.style.width = `${pct}%`;
         }
 
+        // nav buttons + label
         const backBtn = rb$("rbBackBtn");
         const nextBtnLabel = rb$("rbNextBtnLabel");
         const stepNumEl = rb$("rbStepNum");
         if (stepNumEl) stepNumEl.textContent = String(rbState.step);
         if (backBtn) backBtn.style.display = rbState.step === 1 ? "none" : "inline-flex";
-        if (nextBtnLabel) nextBtnLabel.textContent = rbState.step === rbState.maxStep ? "Send My Details to Strativa" : "Next";
 
+        if (nextBtnLabel) {
+          nextBtnLabel.textContent = rbState.step === rbState.maxStep ? "Send My Details to Strativa" : "Next";
+        }
+
+        // update summary when entering step 5
         if (rbState.step === 5) rbUpdateSummary();
+
         rbShowGlobalError("");
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Range sliders wiring
-      // ------------------------------------------------------------
+      // -----------------------------
       function rbWireRanges() {
         const hurricane = rb$("rbHurricaneImpact");
         const hurricaneVal = rb$("rbHurricaneImpactValue");
         const hurricaneLbl = rb$("rbHurricaneImpactLabel");
-        const hurricaneLabels = { 1:"Very minor",2:"Light damage",3:"Moderate damage",4:"Heavy damage",5:"Severe / urgent" };
+        const hurricaneLabels = {
+          1: "Very minor",
+          2: "Light damage",
+          3: "Moderate damage",
+          4: "Heavy damage",
+          5: "Severe / urgent",
+        };
+
         if (hurricane) {
           const sync = () => {
             const v = Number(hurricane.value);
             if (hurricaneVal) hurricaneVal.textContent = String(v);
             if (hurricaneLbl) hurricaneLbl.textContent = hurricaneLabels[v] || "Moderate damage";
           };
-          hurricane.addEventListener("input", sync); sync();
+          hurricane.addEventListener("input", sync);
+          sync();
         }
 
         const priority = rb$("rbProjectPriority");
         const priorityVal = rb$("rbProjectPriorityValue");
         const priorityLbl = rb$("rbProjectPriorityLabel");
-        const priorityLabels = { 1:"Not urgent",2:"Low urgency",3:"Important but flexible",4:"Very urgent",5:"Emergency" };
+        const priorityLabels = {
+          1: "Not urgent",
+          2: "Low urgency",
+          3: "Important but flexible",
+          4: "Very urgent",
+          5: "Emergency",
+        };
+
         if (priority) {
           const sync = () => {
             const v = Number(priority.value);
             if (priorityVal) priorityVal.textContent = String(v);
             if (priorityLbl) priorityLbl.textContent = priorityLabels[v] || "Important but flexible";
           };
-          priority.addEventListener("input", sync); sync();
+          priority.addEventListener("input", sync);
+          sync();
         }
 
         const budgetRange = rb$("rbEstimatedBudgetRange");
         const budgetTag = rb$("rbEstimatedBudgetTag");
         const budgetInput = rb$("rbEstimatedBudgetInput");
         const budgetLive = rb$("rbBudgetLiveLine");
+
         if (budgetRange && budgetInput) {
           const syncFromRange = () => {
             const v = Number(budgetRange.value);
@@ -1449,13 +1647,14 @@
           };
           budgetRange.addEventListener("input", syncFromRange);
           budgetInput.addEventListener("input", syncFromInput);
-          syncFromRange(); // IMPORTANT: ensures input has a value before validation
+          syncFromRange();
         }
 
         const payRange = rb$("rbMonthlyPaymentRange");
         const payTag = rb$("rbMonthlyPaymentTag");
         const payInput = rb$("rbMonthlyPaymentInput");
         const payLive = rb$("rbPaymentLiveLine");
+
         if (payRange && payInput) {
           const syncFromRange = () => {
             const v = Number(payRange.value);
@@ -1472,7 +1671,7 @@
           };
           payRange.addEventListener("input", syncFromRange);
           payInput.addEventListener("input", syncFromInput);
-          syncFromRange(); // IMPORTANT: ensures input has a value before validation
+          syncFromRange();
         }
 
         const tl = rb$("rbStartTimeline");
@@ -1485,73 +1684,100 @@
             if (tlTag) tlTag.textContent = label;
             if (tlLive) tlLive.innerHTML = `You&rsquo;re hoping to start <strong>${v === 0 ? "ASAP" : "within the next " + v + " months"}</strong>.`;
           };
-          tl.addEventListener("input", sync); sync();
+          tl.addEventListener("input", sync);
+          sync();
         }
       }
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Validation
-      // ------------------------------------------------------------
+      // -----------------------------
       function rbValidateStep(step) {
         let ok = true;
+
+        // clear errors in active step only
         const section = document.querySelector(`.rb-step[data-step="${step}"]`);
         if (!section) return true;
         section.querySelectorAll(".rb-field").forEach(rbClearFieldError);
 
         const requireText = (id, msg) => {
+          const wrap = section.querySelector(`.rb-field [id="${id}"]`)?.closest(".rb-field");
           const el = rb$(id);
-          const wrap = section.querySelector(`#${id}`)?.closest(".rb-field") || null;
           if (!el) return true;
           const val = String(el.value || "").trim();
-          if (!val) { rbSetFieldError(wrap, msg); ok = false; }
-          return !!val;
+          if (!val) {
+            rbSetFieldError(wrap, msg);
+            ok = false;
+            return false;
+          }
+          return true;
         };
+
         const requireSelect = requireText;
+
+        const requireRadio = (name, msg) => {
+          const val = rbGetRadioValue(name);
+          const wrap = section.querySelector(`[data-field] input[name="${name}"]`)?.closest(".rb-field") || null;
+          if (!val) {
+            // for pill groups, the rb-field is the parent of the group area
+            const fieldWrap =
+              section.querySelector(`[data-field] input[name="${name}"]`)?.closest("[data-field]") || wrap;
+            rbSetFieldError(fieldWrap, msg);
+            ok = false;
+            return false;
+          }
+          return true;
+        };
 
         if (step === 1) {
           requireText("rbFullName", "Full name is required.");
           requireText("rbPrimaryPhone", "Phone is required.");
           requireSelect("rbPreferredChannel", "Preferred channel is required.");
         }
+
         if (step === 2) {
           requireSelect("rbParish", "Parish is required.");
           requireSelect("rbRebuildType", "Please choose a rebuild type.");
         }
+
         if (step === 3) {
+          // Keep these required on the UI
           requireText("rbEstimatedBudgetInput", "Estimated budget is required.");
           requireText("rbMonthlyPaymentInput", "Monthly payment is required.");
         }
+
+        // Step 4 optional overall (no required), but sponsorCountry only if sponsor is Yes
         if (step === 4) {
           const sponsor = rbGetRadioValue("rbOverseasSponsor");
           if (sponsor === "Yes") {
             const v = String(rb$("rbSponsorCountry")?.value || "").trim();
             const wrap = rb$("rbSponsorCountry")?.closest(".rb-field");
-            if (!v) { rbSetFieldError(wrap, "Please add the sponsor country (or choose No)."); ok = false; }
+            if (!v) {
+              rbSetFieldError(wrap, "Please add the sponsor country (or choose No).");
+              ok = false;
+            }
           }
         }
+
         return ok;
       }
 
-      // ------------------------------------------------------------
-      // Collect data (IMPORTANT: keys match your server.js exactly)
-      // ------------------------------------------------------------
+      // -----------------------------
+      // Collect data
+      // -----------------------------
       function rbCollectData() {
-        const estimatedBudget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
-        const comfortableMonthly = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
-        const desiredTimelineMonths = Number(rb$("rbStartTimeline")?.value || 0);
-
-        const sponsorYesNo = rbGetRadioValue("rbOverseasSponsor"); // Yes/No
-        const hasOverseasSponsor = sponsorYesNo ? sponsorYesNo : ""; // server expects hasOverseasSponsor
-        const willingVisit = rbGetRadioValue("rbWillingVisit");
+        const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
+        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
 
         return {
-          // Required by server:
+          // Step 1
           fullName: String(rb$("rbFullName")?.value || "").trim(),
           primaryPhone: String(rb$("rbPrimaryPhone")?.value || "").trim(),
-          preferredChannel: String(rb$("rbPreferredChannel")?.value || "").trim(),
-
-          // Optional / rest (server maps these columns):
           email: String(rb$("rbEmail")?.value || "").trim(),
+          preferredChannel: String(rb$("rbPreferredChannel")?.value || "").trim(),
+          hearAboutUs: String(rb$("rbHearAboutUs")?.value || "").trim(),
+
+          // Step 2
           parish: String(rb$("rbParish")?.value || "").trim(),
           community: String(rb$("rbCommunity")?.value || "").trim(),
           propertyStatus: rbGetRadioValue("rbPropertyStatus"),
@@ -1559,63 +1785,68 @@
           hurricaneImpactLevel: Number(rb$("rbHurricaneImpact")?.value || 0),
           projectPriority: Number(rb$("rbProjectPriority")?.value || 0),
 
-          estimatedBudget,
-          comfortableMonthly,
-          desiredTimelineMonths,
+          // Step 3
+          estimatedBudget: budget,
+          monthlyPayment: payment,
+          startTimelineMonths: Number(rb$("rbStartTimeline")?.value || 0),
 
+          // Step 4
           nhtContributor: rbGetRadioValue("rbNhtContributor"),
+          employmentType: String(rb$("rbEmploymentType")?.value || "").trim(),
           nhtProduct: String(rb$("rbNhtProduct")?.value || "").trim(),
           otherFinancing: String(rb$("rbOtherFinancing")?.value || "").trim(),
-          employmentType: String(rb$("rbEmploymentType")?.value || "").trim(),
           incomeRange: String(rb$("rbIncomeRange")?.value || "").trim(),
-
-          hasOverseasSponsor,
+          overseasSponsor: rbGetRadioValue("rbOverseasSponsor"),
           sponsorCountry: String(rb$("rbSponsorCountry")?.value || "").trim(),
 
-          willingVisit,
+          // Step 5
+          willingVisit: rbGetRadioValue("rbWillingVisit"),
           visitWindow: String(rb$("rbVisitWindow")?.value || "").trim(),
-          hearAboutUs: String(rb$("rbHearAboutUs")?.value || "").trim(),
-
-          // optional extras
-          leadScore: 0,
-          stage: "New",
-          notes: "Created via Rebuild Web Form (Cloud Run)",
         };
       }
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Summary
-      // ------------------------------------------------------------
+      // -----------------------------
       function rbUpdateSummary() {
         const name = String(rb$("rbFullName")?.value || "").trim();
         const rebuildType = String(rb$("rbRebuildType")?.value || "rebuild project").trim();
         const parish = String(rb$("rbParish")?.value || "your parish").trim();
 
         const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
-        const monthly = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
+        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
         const tl = Number(rb$("rbStartTimeline")?.value || 0);
 
         const greeting = rb$("rbSummaryGreeting");
         if (greeting) greeting.textContent = name ? `Hi ${name.split(" ")[0]},` : "Hi there,";
 
-        if (rb$("rbSummaryRebuildType")) rb$("rbSummaryRebuildType").textContent = rebuildType || "rebuild project";
-        if (rb$("rbSummaryParish")) rb$("rbSummaryParish").textContent = parish || "your parish";
-        if (rb$("rbSummaryBudgetRange")) rb$("rbSummaryBudgetRange").textContent = rbFormatJMD(budget);
-        if (rb$("rbSummaryPayment")) rb$("rbSummaryPayment").textContent = rbFormatJMD(monthly);
+        const rt = rb$("rbSummaryRebuildType");
+        const sp = rb$("rbSummaryParish");
+        if (rt) rt.textContent = rebuildType || "rebuild project";
+        if (sp) sp.textContent = parish || "your parish";
 
-        if (rb$("rbSummaryTimeline")) rb$("rbSummaryTimeline").textContent = tl === 0 ? "ASAP" : `within ${tl} months`;
+        const br = rb$("rbSummaryBudgetRange");
+        const mp = rb$("rbSummaryPayment");
+        if (br) br.textContent = rbFormatJMD(budget);
+        if (mp) mp.textContent = rbFormatJMD(payment);
 
+        const tlEl = rb$("rbSummaryTimeline");
+        if (tlEl) tlEl.textContent = tl === 0 ? "ASAP" : `within ${tl} months`;
+
+        // very simple illustrative estimate range
         const low = Math.round(budget * 0.85);
         const high = Math.round(budget * 1.15);
-        if (rb$("rbSummaryEstimateRange")) rb$("rbSummaryEstimateRange").textContent = `${rbFormatJMD(low)} – ${rbFormatJMD(high)}`;
+        const est = rb$("rbSummaryEstimateRange");
+        if (est) est.textContent = `${rbFormatJMD(low)} – ${rbFormatJMD(high)}`;
       }
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Submit
-      // ------------------------------------------------------------
+      // -----------------------------
       async function rbSubmitLead() {
         if (rbState.isSaving) return;
 
+        // Validate all steps
         for (let s = 1; s <= rbState.maxStep; s++) {
           const ok = rbValidateStep(s);
           if (!ok) {
@@ -1625,7 +1856,7 @@
           }
         }
 
-        const payload = rbCollectData();
+        const data = rbCollectData();
         rbState.isSaving = true;
 
         const nextBtn = rb$("rbNextBtn");
@@ -1636,59 +1867,64 @@
         rbShowGlobalError("");
         rbShowLoadingOverlay();
 
-        const url = `${RB_API_BASE}/api/rb/lead`;
-
         try {
-          // Helpful debug in DevTools -> Console
-          console.log("[RB] POST", url, payload);
-
-          const res = await fetch(url, {
+          const res = await fetch("/api/rb/lead", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(data),
           });
 
-          const text = await res.text(); // read once, then JSON parse
-          let json = {};
-          try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
-
+          const json = await res.json().catch(() => ({}));
           if (!res.ok || !json || !json.success) {
-            console.error("[RB] Server response:", res.status, json);
             throw new Error((json && json.error) || `Submission failed (${res.status})`);
           }
 
+          // Show success UI inside step 5
           const success = rb$("rbSuccess");
           if (success) success.style.display = "block";
+
+          // Hide the summary/cta once success shows (optional, but cleaner)
           rb$("rbSummaryCard")?.setAttribute("style", "display:none;");
           document.querySelector(".rb-cta-block")?.setAttribute("style", "display:none;");
 
           const meta = rb$("rbSuccessMeta");
           if (meta) meta.textContent = json.leadId ? `Reference: ${json.leadId}` : "";
 
+          // Wire booking button + redirect note
+          const bookBtn = rb$("rbBookNowBtn");
+          if (bookBtn) bookBtn.href = RB_BOOKING_URL;
+
+          const note = rb$("rbRedirectNote");
+          if (note) note.textContent = `Redirecting you to booking in ${Math.round(RB_REDIRECT_DELAY_MS / 1000)} seconds…`;
+
+          // Hide nav on success
           rb$("rbBackBtn")?.setAttribute("disabled", "true");
           rb$("rbNextBtn")?.setAttribute("disabled", "true");
 
           rbHideLoadingOverlay();
           rbState.isSaving = false;
+
+          // Auto redirect to booking
+          window.setTimeout(() => {
+            window.location.href = RB_BOOKING_URL;
+          }, RB_REDIRECT_DELAY_MS);
+
+          return;
         } catch (err) {
-          console.error("[RB] Submit error:", err);
+          console.error(err);
           rbHideLoadingOverlay();
           rbState.isSaving = false;
-
-          rbShowGlobalError(
-            "We couldn’t save your details right now. Please try again. " +
-            "If this keeps happening, open DevTools → Network and check the POST response."
-          );
-
+          rbShowGlobalError("We couldn’t save your details right now. Please try again or contact us directly.");
           if (nextBtn) nextBtn.disabled = false;
           if (nextLabel) nextLabel.textContent = "Send My Details to Strativa";
         }
       }
 
-      // ------------------------------------------------------------
+      // -----------------------------
       // Init
-      // ------------------------------------------------------------
+      // -----------------------------
       function rbInit() {
+        // populate selects
         rbPopulateSelect("rbParish", RB_DIMENSIONS_STATIC.parishes);
         rbPopulateSelect("rbRebuildType", RB_DIMENSIONS_STATIC.rebuildTypes);
         rbPopulateSelect("rbIncomeRange", RB_DIMENSIONS_STATIC.incomeRanges);
@@ -1697,10 +1933,12 @@
         rbPopulateSelect("rbOtherFinancing", RB_DIMENSIONS_STATIC.otherFinancing);
         rbPopulateSelect("rbHearAboutUs", RB_DIMENSIONS_STATIC.hearAboutUs);
 
+        // pills
         rbWirePillGroup("rbPropertyStatusGroup", "rbPropertyStatus");
         rbWirePillGroup("rbNhtContributorGroup", "rbNhtContributor");
         rbWirePillGroup("rbOverseasSponsorGroup", "rbOverseasSponsor");
 
+        // refresh pills on change too
         document.addEventListener("change", (e) => {
           if (e.target && e.target.name === "rbPropertyStatus") rbRefreshPills("rbPropertyStatusGroup", "rbPropertyStatus");
           if (e.target && e.target.name === "rbNhtContributor") rbRefreshPills("rbNhtContributorGroup", "rbNhtContributor");
@@ -1710,11 +1948,12 @@
         rbWireLearnToggles();
         rbWireRanges();
 
+        // nav
         const backBtn = rb$("rbBackBtn");
         const nextBtn = rb$("rbNextBtn");
 
         if (backBtn) backBtn.addEventListener("click", () => rbGoToStep(rbState.step - 1));
-        if (nextBtn) {
+        if (nextBtn)
           nextBtn.addEventListener("click", () => {
             if (rbState.step < rbState.maxStep) {
               const ok = rbValidateStep(rbState.step);
@@ -1725,21 +1964,20 @@
               rbGoToStep(rbState.step + 1);
               return;
             }
+            // last step => submit
             rbSubmitLead();
           });
-        }
 
+        // clicking dots (optional)
         document.querySelectorAll(".rb-step-dot").forEach((d) => {
           d.addEventListener("click", () => {
             const step = Number(d.getAttribute("data-step-dot"));
+            // allow going back freely; going forward only if current step valid
             if (step <= rbState.step) rbGoToStep(step);
           });
         });
 
         rbGoToStep(1);
-
-        // quick visibility for debugging
-        console.log("[RB] API Base:", RB_API_BASE);
       }
 
       document.addEventListener("DOMContentLoaded", rbInit);
