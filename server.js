@@ -1,4 +1,4 @@
-// server.js (Cloud Run -> Google Sheets API writer, with auto sheet + headers)
+// server.js (Cloud Run -> Google Sheets API writer, with auto sheet + headers + CORS)
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,19 +9,48 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// ---------------------------------------------------------------------
+// BODY PARSING
+// ---------------------------------------------------------------------
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static site from /public
+// ---------------------------------------------------------------------
+// CORS (THIS is why Postman works but the browser form doesn't)
+// ---------------------------------------------------------------------
+// Set this in Cloud Run env vars if your form is hosted elsewhere:
+//   CORS_ORIGIN=https://your-frontend-domain.com
+// For quick testing you can leave it as "*" (less secure).
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "https://strativabuild-93590416030.us-central1.run.app";
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Preflight requests (browser sends OPTIONS before POST)
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+
+  next();
+});
+
+// ---------------------------------------------------------------------
+// STATIC SITE
+// ---------------------------------------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "index.html"))
+);
 
 // ---------------------------------------------------------------------
 // CONFIG (set these in Cloud Run > Variables & Secrets)
 // ---------------------------------------------------------------------
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID || ""; // REQUIRED
 const LEADS_SHEET_NAME = process.env.LEADS_SHEET_NAME || "Leads";
-const LEADS_RANGE_NAME = process.env.LEADS_RANGE_NAME || `${LEADS_SHEET_NAME}!A:AB`;
+const LEADS_RANGE_NAME =
+  process.env.LEADS_RANGE_NAME || `${LEADS_SHEET_NAME}!A:AB`;
 
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
@@ -30,34 +59,34 @@ const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form
 // HEADERS (A..AB = 28 columns)
 // ---------------------------------------------------------------------
 const LEADS_HEADERS = [
-  "Timestamp",                 // A
-  "Lead ID",                   // B
-  "Full Name",                 // C
-  "Phone",                     // D
-  "Email",                     // E
-  "Preferred Channel",         // F
-  "Parish",                    // G
-  "Community",                 // H
-  "Property Status",           // I
-  "Rebuild Type",              // J
-  "Hurricane Impact Level",    // K
-  "Project Priority",          // L
-  "Estimated Budget",          // M
-  "Comfortable Monthly",       // N
-  "Desired Timeline Months",   // O
-  "NHT Contributor",           // P
-  "NHT Product",               // Q
-  "Other Financing",           // R
-  "Employment Type",           // S
-  "Income Range",              // T
-  "Has Overseas Sponsor",      // U
-  "Sponsor Country",           // V
-  "Willing Visit",             // W
-  "Visit Window",              // X
-  "Hear About Us",             // Y
-  "Lead Score",                // Z
-  "Stage",                     // AA
-  "Notes",                     // AB
+  "Timestamp", // A
+  "Lead ID", // B
+  "Full Name", // C
+  "Phone", // D
+  "Email", // E
+  "Preferred Channel", // F
+  "Parish", // G
+  "Community", // H
+  "Property Status", // I
+  "Rebuild Type", // J
+  "Hurricane Impact Level", // K
+  "Project Priority", // L
+  "Estimated Budget", // M
+  "Comfortable Monthly", // N
+  "Desired Timeline Months", // O
+  "NHT Contributor", // P
+  "NHT Product", // Q
+  "Other Financing", // R
+  "Employment Type", // S
+  "Income Range", // T
+  "Has Overseas Sponsor", // U
+  "Sponsor Country", // V
+  "Willing Visit", // W
+  "Visit Window", // X
+  "Hear About Us", // Y
+  "Lead Score", // Z
+  "Stage", // AA
+  "Notes", // AB
 ];
 
 // ---------------------------------------------------------------------
@@ -78,7 +107,7 @@ function makeTraceId() {
 }
 
 async function getSheetsClient() {
-  // Uses the Cloud Run service account automatically (Application Default Credentials)
+  // Uses the Cloud Run service account automatically (ADC)
   const auth = new google.auth.GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
@@ -87,7 +116,7 @@ async function getSheetsClient() {
 }
 
 async function ensureLeadsSheetAndHeaders(sheets) {
-  // 1) Ensure the "Leads" sheet/tab exists
+  // 1) Ensure the tab exists
   const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const existing = (meta.data.sheets || []).find(
     (s) => s.properties?.title === LEADS_SHEET_NAME
@@ -97,9 +126,7 @@ async function ensureLeadsSheetAndHeaders(sheets) {
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId: SPREADSHEET_ID,
       requestBody: {
-        requests: [
-          { addSheet: { properties: { title: LEADS_SHEET_NAME } } },
-        ],
+        requests: [{ addSheet: { properties: { title: LEADS_SHEET_NAME } } }],
       },
     });
   }
@@ -122,12 +149,13 @@ async function ensureLeadsSheetAndHeaders(sheets) {
       requestBody: { values: [LEADS_HEADERS] },
     });
 
-    // Optional: freeze header row
+    // Freeze header row
     const meta2 = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
     const sheet = (meta2.data.sheets || []).find(
       (s) => s.properties?.title === LEADS_SHEET_NAME
     );
     const sheetId = sheet?.properties?.sheetId;
+
     if (typeof sheetId === "number") {
       await sheets.spreadsheets.batchUpdate({
         spreadsheetId: SPREADSHEET_ID,
@@ -146,7 +174,9 @@ async function ensureLeadsSheetAndHeaders(sheets) {
   }
 }
 
-// Quick config check endpoint
+// ---------------------------------------------------------------------
+// HEALTH CHECK
+// ---------------------------------------------------------------------
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -154,6 +184,7 @@ app.get("/health", (req, res) => {
     spreadsheetId: SPREADSHEET_ID ? "set" : "missing",
     range: LEADS_RANGE_NAME,
     sheetName: LEADS_SHEET_NAME,
+    corsOrigin: CORS_ORIGIN,
   });
 });
 
@@ -191,7 +222,6 @@ app.post("/api/rb/lead", async (req, res) => {
     const leadId = formData.leadId || generateLeadId();
     const timestamp = new Date().toISOString();
 
-    // Match your 28 columns (A..AB)
     const row = [
       timestamp,
       leadId,
@@ -240,9 +270,13 @@ app.post("/api/rb/lead", async (req, res) => {
   } catch (err) {
     const status = err?.code || err?.response?.status;
     const message = err?.message || "Unknown error";
-    const details = err?.response?.data || err?.errors || null;
 
-    console.error("Sheets write error:", { traceId, status, message, details });
+    console.error("Sheets write error:", {
+      traceId,
+      status,
+      message,
+      details: err?.response?.data || err?.errors || null,
+    });
 
     return res.status(500).json({
       success: false,
