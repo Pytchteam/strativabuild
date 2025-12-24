@@ -1296,7 +1296,7 @@
               </div>
             </article>
 
-            <!-- CTA BLOCK (FIXED / CLEAN) -->
+            <!-- CTA BLOCK -->
             <div class="rb-cta-block">
               <div>Would you like a Strativa Rebuild Advisor to review this and contact you with next steps?</div>
 
@@ -1455,7 +1455,6 @@
       function rbPopulateSelect(id, values) {
         const select = rb$(id);
         if (!select || !Array.isArray(values)) return;
-        // keep first option
         while (select.options.length > 1) select.remove(1);
         values.forEach((v) => {
           const opt = document.createElement("option");
@@ -1515,27 +1514,23 @@
       function rbGoToStep(step) {
         rbState.step = Math.min(rbState.maxStep, Math.max(1, step));
 
-        // show section
         document.querySelectorAll(".rb-step").forEach((s) => {
           const sNum = Number(s.getAttribute("data-step"));
           s.classList.toggle("is-active", sNum === rbState.step);
         });
 
-        // progress dots
         document.querySelectorAll(".rb-step-dot").forEach((d) => {
           const n = Number(d.getAttribute("data-step-dot"));
           d.classList.toggle("is-active", n === rbState.step);
           d.classList.toggle("is-complete", n < rbState.step);
         });
 
-        // line fill
         const fill = rb$("rbProgressFill");
         if (fill) {
           const pct = ((rbState.step - 1) / (rbState.maxStep - 1)) * 100;
           fill.style.width = `${pct}%`;
         }
 
-        // nav buttons + label
         const backBtn = rb$("rbBackBtn");
         const nextBtnLabel = rb$("rbNextBtnLabel");
         const stepNumEl = rb$("rbStepNum");
@@ -1543,10 +1538,10 @@
         if (backBtn) backBtn.style.display = rbState.step === 1 ? "none" : "inline-flex";
 
         if (nextBtnLabel) {
-          nextBtnLabel.textContent = rbState.step === rbState.maxStep ? "Send My Details to Strativa" : "Next";
+          nextBtnLabel.textContent =
+            rbState.step === rbState.maxStep ? "Send My Details to Strativa" : "Next";
         }
 
-        // update summary when entering step 5
         if (rbState.step === 5) rbUpdateSummary();
 
         rbShowGlobalError("");
@@ -1609,14 +1604,23 @@
             const v = Number(budgetRange.value);
             budgetInput.value = String(v);
             if (budgetTag) budgetTag.textContent = rbFormatJMD(v);
-            if (budgetLive) budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(v)}</strong> total.`;
+            if (budgetLive)
+              budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(
+                v
+              )}</strong> total.`;
           };
           const syncFromInput = () => {
             const v = Number(budgetInput.value || 0);
-            const clamped = Math.min(Number(budgetRange.max), Math.max(Number(budgetRange.min), v));
+            const clamped = Math.min(
+              Number(budgetRange.max),
+              Math.max(Number(budgetRange.min), v)
+            );
             budgetRange.value = String(clamped);
             if (budgetTag) budgetTag.textContent = rbFormatJMD(clamped);
-            if (budgetLive) budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(clamped)}</strong> total.`;
+            if (budgetLive)
+              budgetLive.innerHTML = `You&rsquo;re aiming for around <strong>${rbFormatJMD(
+                clamped
+              )}</strong> total.`;
           };
           budgetRange.addEventListener("input", syncFromRange);
           budgetInput.addEventListener("input", syncFromInput);
@@ -1633,14 +1637,23 @@
             const v = Number(payRange.value);
             payInput.value = String(v);
             if (payTag) payTag.textContent = rbFormatJMD(v);
-            if (payLive) payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(v)}</strong>.`;
+            if (payLive)
+              payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(
+                v
+              )}</strong>.`;
           };
           const syncFromInput = () => {
             const v = Number(payInput.value || 0);
-            const clamped = Math.min(Number(payRange.max), Math.max(Number(payRange.min), v));
+            const clamped = Math.min(
+              Number(payRange.max),
+              Math.max(Number(payRange.min), v)
+            );
             payRange.value = String(clamped);
             if (payTag) payTag.textContent = rbFormatJMD(clamped);
-            if (payLive) payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(clamped)}</strong>.`;
+            if (payLive)
+              payLive.innerHTML = `You&rsquo;d like to keep monthly payments around <strong>${rbFormatJMD(
+                clamped
+              )}</strong>.`;
           };
           payRange.addEventListener("input", syncFromRange);
           payInput.addEventListener("input", syncFromInput);
@@ -1655,7 +1668,10 @@
             const v = Number(tl.value);
             const label = v === 0 ? "ASAP" : `${v} months`;
             if (tlTag) tlTag.textContent = label;
-            if (tlLive) tlLive.innerHTML = `You&rsquo;re hoping to start <strong>${v === 0 ? "ASAP" : "within the next " + v + " months"}</strong>.`;
+            if (tlLive)
+              tlLive.innerHTML = `You&rsquo;re hoping to start <strong>${
+                v === 0 ? "ASAP" : "within the next " + v + " months"
+              }</strong>.`;
           };
           tl.addEventListener("input", sync);
           sync();
@@ -1668,7 +1684,6 @@
       function rbValidateStep(step) {
         let ok = true;
 
-        // clear errors in active step only
         const section = document.querySelector(`.rb-step[data-step="${step}"]`);
         if (!section) return true;
         section.querySelectorAll(".rb-field").forEach(rbClearFieldError);
@@ -1688,20 +1703,6 @@
 
         const requireSelect = requireText;
 
-        const requireRadio = (name, msg) => {
-          const val = rbGetRadioValue(name);
-          const wrap = section.querySelector(`[data-field] input[name="${name}"]`)?.closest(".rb-field") || null;
-          if (!val) {
-            // for pill groups, the rb-field is the parent of the group area
-            const fieldWrap =
-              section.querySelector(`[data-field] input[name="${name}"]`)?.closest("[data-field]") || wrap;
-            rbSetFieldError(fieldWrap, msg);
-            ok = false;
-            return false;
-          }
-          return true;
-        };
-
         if (step === 1) {
           requireText("rbFullName", "Full name is required.");
           requireText("rbPrimaryPhone", "Phone is required.");
@@ -1714,12 +1715,10 @@
         }
 
         if (step === 3) {
-          // Keep these required on the UI
           requireText("rbEstimatedBudgetInput", "Estimated budget is required.");
           requireText("rbMonthlyPaymentInput", "Monthly payment is required.");
         }
 
-        // Step 4 optional overall (no required), but sponsorCountry only if sponsor is Yes
         if (step === 4) {
           const sponsor = rbGetRadioValue("rbOverseasSponsor");
           if (sponsor === "Yes") {
@@ -1736,11 +1735,18 @@
       }
 
       // -----------------------------
-      // Collect data
+      // Collect data  ✅ FIXED KEYS TO MATCH SERVER
       // -----------------------------
       function rbCollectData() {
-        const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
-        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
+        const budget = Number(
+          rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0
+        );
+
+        const comfortableMonthly = Number(
+          rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0
+        );
+
+        const desiredTimelineMonths = Number(rb$("rbStartTimeline")?.value || 0);
 
         return {
           // Step 1
@@ -1758,23 +1764,27 @@
           hurricaneImpactLevel: Number(rb$("rbHurricaneImpact")?.value || 0),
           projectPriority: Number(rb$("rbProjectPriority")?.value || 0),
 
-          // Step 3
+          // Step 3 (SERVER EXPECTS THESE NAMES)
           estimatedBudget: budget,
-          monthlyPayment: payment,
-          startTimelineMonths: Number(rb$("rbStartTimeline")?.value || 0),
+          comfortableMonthly: comfortableMonthly,
+          desiredTimelineMonths: desiredTimelineMonths,
 
-          // Step 4
+          // Step 4 (SERVER EXPECTS THESE NAMES)
           nhtContributor: rbGetRadioValue("rbNhtContributor"),
           employmentType: String(rb$("rbEmploymentType")?.value || "").trim(),
           nhtProduct: String(rb$("rbNhtProduct")?.value || "").trim(),
           otherFinancing: String(rb$("rbOtherFinancing")?.value || "").trim(),
           incomeRange: String(rb$("rbIncomeRange")?.value || "").trim(),
-          overseasSponsor: rbGetRadioValue("rbOverseasSponsor"),
+          hasOverseasSponsor: rbGetRadioValue("rbOverseasSponsor"),
           sponsorCountry: String(rb$("rbSponsorCountry")?.value || "").trim(),
 
           // Step 5
           willingVisit: rbGetRadioValue("rbWillingVisit"),
           visitWindow: String(rb$("rbVisitWindow")?.value || "").trim(),
+
+          // Optional extras (server supports)
+          stage: "New",
+          notes: "Created via Rebuild Web Form",
         };
       }
 
@@ -1786,8 +1796,12 @@
         const rebuildType = String(rb$("rbRebuildType")?.value || "rebuild project").trim();
         const parish = String(rb$("rbParish")?.value || "your parish").trim();
 
-        const budget = Number(rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0);
-        const payment = Number(rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0);
+        const budget = Number(
+          rb$("rbEstimatedBudgetInput")?.value || rb$("rbEstimatedBudgetRange")?.value || 0
+        );
+        const payment = Number(
+          rb$("rbMonthlyPaymentInput")?.value || rb$("rbMonthlyPaymentRange")?.value || 0
+        );
         const tl = Number(rb$("rbStartTimeline")?.value || 0);
 
         const greeting = rb$("rbSummaryGreeting");
@@ -1806,7 +1820,6 @@
         const tlEl = rb$("rbSummaryTimeline");
         if (tlEl) tlEl.textContent = tl === 0 ? "ASAP" : `within ${tl} months`;
 
-        // very simple illustrative estimate range
         const low = Math.round(budget * 0.85);
         const high = Math.round(budget * 1.15);
         const est = rb$("rbSummaryEstimateRange");
@@ -1819,7 +1832,6 @@
       async function rbSubmitLead() {
         if (rbState.isSaving) return;
 
-        // Validate all steps
         for (let s = 1; s <= rbState.maxStep; s++) {
           const ok = rbValidateStep(s);
           if (!ok) {
@@ -1852,18 +1864,15 @@
             throw new Error((json && json.error) || `Submission failed (${res.status})`);
           }
 
-          // Show success UI inside step 5
           const success = rb$("rbSuccess");
           if (success) success.style.display = "block";
 
-          // Hide the summary/cta once success shows (optional, but cleaner)
           rb$("rbSummaryCard")?.setAttribute("style", "display:none;");
           document.querySelector(".rb-cta-block")?.setAttribute("style", "display:none;");
 
           const meta = rb$("rbSuccessMeta");
           if (meta) meta.textContent = json.leadId ? `Reference: ${json.leadId}` : "";
 
-          // Hide nav on success
           rb$("rbBackBtn")?.setAttribute("disabled", "true");
           rb$("rbNextBtn")?.setAttribute("disabled", "true");
 
@@ -1884,7 +1893,6 @@
       // Init
       // -----------------------------
       function rbInit() {
-        // populate selects
         rbPopulateSelect("rbParish", RB_DIMENSIONS_STATIC.parishes);
         rbPopulateSelect("rbRebuildType", RB_DIMENSIONS_STATIC.rebuildTypes);
         rbPopulateSelect("rbIncomeRange", RB_DIMENSIONS_STATIC.incomeRanges);
@@ -1893,22 +1901,22 @@
         rbPopulateSelect("rbOtherFinancing", RB_DIMENSIONS_STATIC.otherFinancing);
         rbPopulateSelect("rbHearAboutUs", RB_DIMENSIONS_STATIC.hearAboutUs);
 
-        // pills
         rbWirePillGroup("rbPropertyStatusGroup", "rbPropertyStatus");
         rbWirePillGroup("rbNhtContributorGroup", "rbNhtContributor");
         rbWirePillGroup("rbOverseasSponsorGroup", "rbOverseasSponsor");
 
-        // refresh pills on change too
         document.addEventListener("change", (e) => {
-          if (e.target && e.target.name === "rbPropertyStatus") rbRefreshPills("rbPropertyStatusGroup", "rbPropertyStatus");
-          if (e.target && e.target.name === "rbNhtContributor") rbRefreshPills("rbNhtContributorGroup", "rbNhtContributor");
-          if (e.target && e.target.name === "rbOverseasSponsor") rbRefreshPills("rbOverseasSponsorGroup", "rbOverseasSponsor");
+          if (e.target && e.target.name === "rbPropertyStatus")
+            rbRefreshPills("rbPropertyStatusGroup", "rbPropertyStatus");
+          if (e.target && e.target.name === "rbNhtContributor")
+            rbRefreshPills("rbNhtContributorGroup", "rbNhtContributor");
+          if (e.target && e.target.name === "rbOverseasSponsor")
+            rbRefreshPills("rbOverseasSponsorGroup", "rbOverseasSponsor");
         });
 
         rbWireLearnToggles();
         rbWireRanges();
 
-        // nav
         const backBtn = rb$("rbBackBtn");
         const nextBtn = rb$("rbNextBtn");
 
@@ -1924,15 +1932,12 @@
               rbGoToStep(rbState.step + 1);
               return;
             }
-            // last step => submit
             rbSubmitLead();
           });
 
-        // clicking dots (optional)
         document.querySelectorAll(".rb-step-dot").forEach((d) => {
           d.addEventListener("click", () => {
             const step = Number(d.getAttribute("data-step-dot"));
-            // allow going back freely; going forward only if current step valid
             if (step <= rbState.step) rbGoToStep(step);
           });
         });
