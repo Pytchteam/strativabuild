@@ -1,4 +1,4 @@
-// server.js (Cloud Run -> Google Sheets API writer, with auto sheet + headers + CORS)
+// server.js (Cloud Run -> Google Sheets API writer, auto sheet + headers, sane CORS, tolerant payload mapping)
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,22 +17,44 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // ---------------------------------------------------------------------
-// CORS (THIS is why Postman works but the browser form doesn't)
+// CORS
 // ---------------------------------------------------------------------
-// Set this in Cloud Run env vars if your form is hosted elsewhere:
-//   CORS_ORIGIN=https://your-frontend-domain.com
-// For quick testing you can leave it as "*" (less secure).
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "https://strativabuild-93590416030.us-central1.run.app";
+// Set in Cloud Run env vars (comma-separated):
+//   CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+// If omitted, we allow same-origin usage (your form served from Cloud Run) and localhost.
+const DEFAULT_ALLOWED = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "http://127.0.0.1:8080",
+];
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const ALLOWED_ORIGINS = [...new Set([...DEFAULT_ALLOWED, ...CORS_ORIGINS])];
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  const origin = req.headers.origin;
 
-  // Preflight requests (browser sends OPTIONS before POST)
+  // If request has an Origin header (browser), allow only if it matches our allowlist.
+  // If no Origin header (Postman/server-to-server), let it pass.
+  if (origin) {
+    const allowed =
+      ALLOWED_ORIGINS.includes(origin) ||
+      // also allow same Cloud Run origin automatically
+      origin === `https://${req.headers.host}`;
+
+    if (allowed) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Vary", "Origin");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    }
+  }
+
   if (req.method === "OPTIONS") return res.sendStatus(204);
-
   next();
 });
 
@@ -40,17 +62,14 @@ app.use((req, res, next) => {
 // STATIC SITE
 // ---------------------------------------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
-app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "index.html"))
-);
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 // ---------------------------------------------------------------------
-// CONFIG (set these in Cloud Run > Variables & Secrets)
+// CONFIG (Cloud Run > Variables & Secrets)
 // ---------------------------------------------------------------------
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID || "1OJmAX__67ORdA_T5yOtEiW4wDIpLmxzL7BnE15ldpyE"; // REQUIRED
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID || ""; // strongly recommended via env var
 const LEADS_SHEET_NAME = process.env.LEADS_SHEET_NAME || "Leads";
-const LEADS_RANGE_NAME =
-  process.env.LEADS_RANGE_NAME || `${LEADS_SHEET_NAME}!A:AB`;
+const LEADS_RANGE_NAME = process.env.LEADS_RANGE_NAME || `${LEADS_SHEET_NAME}!A:AB`;
 
 const STAGE_DEFAULT = process.env.STAGE_DEFAULT || "New";
 const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form";
@@ -59,34 +78,34 @@ const NOTES_DEFAULT = process.env.NOTES_DEFAULT || "Created via Rebuild Web Form
 // HEADERS (A..AB = 28 columns)
 // ---------------------------------------------------------------------
 const LEADS_HEADERS = [
-  "Timestamp", // A
-  "Lead ID", // B
-  "Full Name", // C
-  "Phone", // D
-  "Email", // E
-  "Preferred Channel", // F
-  "Parish", // G
-  "Community", // H
-  "Property Status", // I
-  "Rebuild Type", // J
-  "Hurricane Impact Level", // K
-  "Project Priority", // L
-  "Estimated Budget", // M
-  "Comfortable Monthly", // N
-  "Desired Timeline Months", // O
-  "NHT Contributor", // P
-  "NHT Product", // Q
-  "Other Financing", // R
-  "Employment Type", // S
-  "Income Range", // T
-  "Has Overseas Sponsor", // U
-  "Sponsor Country", // V
-  "Willing Visit", // W
-  "Visit Window", // X
-  "Hear About Us", // Y
-  "Lead Score", // Z
-  "Stage", // AA
-  "Notes", // AB
+  "Timestamp",                 // A
+  "Lead ID",                   // B
+  "Full Name",                 // C
+  "Phone",                     // D
+  "Email",                     // E
+  "Preferred Channel",         // F
+  "Parish",                    // G
+  "Community",                 // H
+  "Property Status",           // I
+  "Rebuild Type",              // J
+  "Hurricane Impact Level",    // K
+  "Project Priority",          // L
+  "Estimated Budget",          // M
+  "Comfortable Monthly",       // N
+  "Desired Timeline Months",   // O
+  "NHT Contributor",           // P
+  "NHT Product",               // Q
+  "Other Financing",           // R
+  "Employment Type",           // S
+  "Income Range",              // T
+  "Has Overseas Sponsor",      // U
+  "Sponsor Country",           // V
+  "Willing Visit",             // W
+  "Visit Window",              // X
+  "Hear About Us",             // Y
+  "Lead Score",                // Z
+  "Stage",                     // AA
+  "Notes",                     // AB
 ];
 
 // ---------------------------------------------------------------------
@@ -149,7 +168,7 @@ async function ensureLeadsSheetAndHeaders(sheets) {
       requestBody: { values: [LEADS_HEADERS] },
     });
 
-    // Freeze header row
+    // Freeze header row (optional)
     const meta2 = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
     const sheet = (meta2.data.sheets || []).find(
       (s) => s.properties?.title === LEADS_SHEET_NAME
@@ -174,6 +193,15 @@ async function ensureLeadsSheetAndHeaders(sheets) {
   }
 }
 
+// payload mapping helper (accept old + new keys)
+function pick(formData, keys, fallback = "") {
+  for (const k of keys) {
+    const v = formData?.[k];
+    if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+  }
+  return fallback;
+}
+
 // ---------------------------------------------------------------------
 // HEALTH CHECK
 // ---------------------------------------------------------------------
@@ -181,10 +209,9 @@ app.get("/health", (req, res) => {
   res.json({
     ok: true,
     spreadsheetConfigured: !!SPREADSHEET_ID,
-    spreadsheetId: SPREADSHEET_ID ? "set" : "missing",
-    range: LEADS_RANGE_NAME,
     sheetName: LEADS_SHEET_NAME,
-    corsOrigin: CORS_ORIGIN,
+    range: LEADS_RANGE_NAME,
+    allowedOrigins: ALLOWED_ORIGINS,
   });
 });
 
@@ -195,17 +222,6 @@ app.post("/api/rb/lead", async (req, res) => {
   const traceId = makeTraceId();
 
   try {
-    const formData = req.body || {};
-
-    // Required fields
-    if (!formData.fullName || !formData.primaryPhone || !formData.preferredChannel) {
-      return res.status(400).json({
-        success: false,
-        error: "Missing required contact details (name, phone, preferred channel).",
-        debug: { traceId },
-      });
-    }
-
     if (!SPREADSHEET_ID) {
       return res.status(500).json({
         success: false,
@@ -214,43 +230,68 @@ app.post("/api/rb/lead", async (req, res) => {
       });
     }
 
-    const sheets = await getSheetsClient();
+    const formData = req.body || {};
 
-    // Ensure tab + headers exist before writing
+    // Normalize required fields
+    const fullName = String(pick(formData, ["fullName"], "")).trim();
+    const primaryPhone = String(pick(formData, ["primaryPhone"], "")).trim();
+    const preferredChannel = String(pick(formData, ["preferredChannel"], "")).trim();
+
+    if (!fullName || !primaryPhone || !preferredChannel) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing required contact details (name, phone, preferred channel).",
+        debug: { traceId, receivedKeys: Object.keys(formData || {}) },
+      });
+    }
+
+    // Normalize “mixed naming” fields from frontend
+    const estimatedBudget = toNumber(pick(formData, ["estimatedBudget"], 0));
+    const comfortableMonthly = toNumber(
+      pick(formData, ["comfortableMonthly", "monthlyPayment"], 0)
+    );
+    const desiredTimelineMonths = toNumber(
+      pick(formData, ["desiredTimelineMonths", "startTimelineMonths"], 0)
+    );
+    const hasOverseasSponsor = String(
+      pick(formData, ["hasOverseasSponsor", "overseasSponsor"], "")
+    ).trim();
+
+    const sheets = await getSheetsClient();
     await ensureLeadsSheetAndHeaders(sheets);
 
-    const leadId = formData.leadId || generateLeadId();
+    const leadId = String(pick(formData, ["leadId"], generateLeadId()));
     const timestamp = new Date().toISOString();
 
     const row = [
       timestamp,
       leadId,
-      formData.fullName || "",
-      formData.primaryPhone || "",
-      formData.email || "",
-      formData.preferredChannel || "",
-      formData.parish || "",
-      formData.community || "",
-      formData.propertyStatus || "",
-      formData.rebuildType || "",
-      toNumber(formData.hurricaneImpactLevel),
-      toNumber(formData.projectPriority),
-      toNumber(formData.estimatedBudget),
-      toNumber(formData.comfortableMonthly),
-      toNumber(formData.desiredTimelineMonths),
-      formData.nhtContributor || "",
-      formData.nhtProduct || "",
-      formData.otherFinancing || "",
-      formData.employmentType || "",
-      formData.incomeRange || "",
-      formData.hasOverseasSponsor || "",
-      formData.sponsorCountry || "",
-      formData.willingVisit || "",
-      formData.visitWindow || "",
-      formData.hearAboutUs || "",
-      toNumber(formData.leadScore),
-      formData.stage || STAGE_DEFAULT,
-      formData.notes || NOTES_DEFAULT,
+      fullName,
+      primaryPhone,
+      String(pick(formData, ["email"], "")),
+      preferredChannel,
+      String(pick(formData, ["parish"], "")),
+      String(pick(formData, ["community"], "")),
+      String(pick(formData, ["propertyStatus"], "")),
+      String(pick(formData, ["rebuildType"], "")),
+      toNumber(pick(formData, ["hurricaneImpactLevel"], 0)),
+      toNumber(pick(formData, ["projectPriority"], 0)),
+      estimatedBudget,
+      comfortableMonthly,
+      desiredTimelineMonths,
+      String(pick(formData, ["nhtContributor"], "")),
+      String(pick(formData, ["nhtProduct"], "")),
+      String(pick(formData, ["otherFinancing"], "")),
+      String(pick(formData, ["employmentType"], "")),
+      String(pick(formData, ["incomeRange"], "")),
+      hasOverseasSponsor,
+      String(pick(formData, ["sponsorCountry"], "")),
+      String(pick(formData, ["willingVisit"], "")),
+      String(pick(formData, ["visitWindow"], "")),
+      String(pick(formData, ["hearAboutUs"], "")),
+      toNumber(pick(formData, ["leadScore"], 0)),
+      String(pick(formData, ["stage"], STAGE_DEFAULT)),
+      String(pick(formData, ["notes"], NOTES_DEFAULT)),
     ];
 
     const result = await sheets.spreadsheets.values.append({
@@ -268,7 +309,7 @@ app.post("/api/rb/lead", async (req, res) => {
       debug: { traceId },
     });
   } catch (err) {
-    const status = err?.code || err?.response?.status;
+    const status = err?.code || err?.response?.status || 500;
     const message = err?.message || "Unknown error";
 
     console.error("Sheets write error:", {
@@ -281,10 +322,11 @@ app.post("/api/rb/lead", async (req, res) => {
     return res.status(500).json({
       success: false,
       error: "Failed to write to Google Sheets.",
-      debug: { traceId, status: status || null, message },
+      debug: { traceId, status, message },
     });
   }
 });
 
 const port = process.env.PORT || 8080;
 app.listen(port, "0.0.0.0", () => console.log(`Running on port ${port}`));
+
