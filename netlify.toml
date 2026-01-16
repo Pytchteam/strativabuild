@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/rb/lead"
+  to = "/.netlify/functions/rb-lead"
+  status = 200
+  conditions = { Method = "POST" }
